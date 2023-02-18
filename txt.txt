@@ -1,0 +1,95 @@
+@app.route("/connection", methods = ['POST', 'GET'])
+def connection():
+    if request.method == 'POST':
+        donnee = request.form
+        mail = request.form.get('mail')
+        pseudo = request.form.get('pseudo')
+        mdp = request.form.get('password')
+    return render_template('index.html', pseudo = pseudo)
+
+/
+@app.route("/connection", methods = ['POST', 'GET'])
+def connection():
+    if request.method == 'POST':
+        mail = request.form.get('mail')
+        pseudo = request.form.get('pseudo')
+        mdp = request.form.get('password')
+        sqlmail = f"SELECT mail FROM user WHERE mail =  '{mail}' "
+        sqlmdp = f"SELECT password FROM user WHERE password = '{mdp}' "
+        repmail = cursor.execute(sqlmail)
+        print(repmail)
+        repmdp = cursor.execute(sqlmdp)
+        print(repmdp)
+        if mail == repmail and mdp == repmdp:
+            print("sa a marché")
+            return render_template('index.html')
+    else : 
+        return render_template('index.html', pseudo = pseudo)
+
+/
+def verifCompteCreer(email, pseudo, mdp):
+    requete = f"SELECT email, pseudo FROM user WHERE mail = '{email}' OR pseudo = '{pseudo}' OR password = '{mdp}';"
+    cur.execute(requete)
+    test = cur.fetchone()
+    return test 
+
+/
+@app.route("/connection", methods = ['POST', 'GET'])
+def connection():
+    if request.method == 'POST':
+        mail = request.form.get('mail')
+        mdp = request.form.get('password')
+        pseudo = request.form.get('pseudo')
+        if verifCompteCreer(mail, pseudo, mdp):
+            return render_template('login.html', VCompt = False)
+        else : 
+            session['nom_utilisateur'] = pseudo
+            redirect(request.url)
+
+/
+@app.route("/traitement", methods=['POST', 'GET'])
+def traitement():
+    if request.method == 'POST':
+        mail = request.form.get('mail')
+        pseudo = request.form.get('pseudo')
+        mdp = request.form.get('password')
+        date = datetime.now()
+        val = mail, pseudo, mdp, date
+        sql = "INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, val)
+        cnx.commit()
+        return render_template('index.html', pseudo = pseudo)
+    else:
+        return redirect(url_for('index'))
+
+
+/
+@app.route('/sign_up', methods=["POST", "GET"])
+def sign_up():
+    if request.method == 'POST':
+        donne = request.form
+        mail = donne.get('mail')
+        pseudo = donne.get('pseudo')
+        mdp = donne.get('password')
+        mail2 = f"('{mail}',)"
+        mail3 = verifCompteCreer(mail)
+        print(mail2)
+        print(mail3)
+        if mail3 == mail2:
+            return render_template('index.html')
+        else:
+            date = datetime.now()
+            val = mail, pseudo, mdp, date
+            sql = "INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)"
+            cur.execute(sql, val)
+            cnx.commit()
+            session['pseudo'] = pseudo
+            return redirect(url_for('index'))
+
+    return render_template("sign_up.html")
+
+def verifCompteCreer(mails):
+    requete = f"SELECT mail FROM user WHERE mail = '{mails}';"
+    cur.execute(requete)
+    test = cur.fetchone()
+    return test 
