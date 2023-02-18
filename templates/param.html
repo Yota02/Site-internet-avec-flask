@@ -2,8 +2,8 @@
 {% block content %}
 
 <div> 
-    <h1 class = "noir"> 
-        Dashbord
+    <h1 class = "param"> 
+       Paramètres
     </h1> 
     <br>
     <div class = "block2" > 
@@ -12,7 +12,9 @@
         </h2>
     </div>
     <div class="block">
+        <img class = "pp" src="/static/img/icone_defaut.png" height="15%" width="15%">
         <div class="marging"> 
+
             <br>
             <h1 class="noir-profil">
                 Pseudo : {{session.pseudo}}
@@ -39,15 +41,18 @@
                     Supprimé
                 </a> 
             </p>
-           <br>
-            <form method="post" enctype="multipart/form-data" >
-                <input type="file" name="file">
-                <input type="submit">
-            </form> 
-            
+           <br> 
+           
         </div>
         
-    
+    </div>
+    <div class = "block"> 
+        <br>
+        <form method="post" enctype="multipart/form-data" action = {{url_for('upload_img')}}>
+            <div class="msg">{{ msg }}</div>
+            <input type="file" name="file">
+            <input type="submit">
+        </form> 
     </div>
 
 </div>

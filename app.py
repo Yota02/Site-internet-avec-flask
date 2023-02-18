@@ -1,9 +1,12 @@
 from flask import *
 from datetime import datetime
 import mysql.connector
-import re
+import imghdr
 
 app = Flask(__name__)
+
+import urllib, hashlib
+
 
 cnx = mysql.connector.connect(host = 'localhost',
                               user = 'root',
@@ -17,19 +20,18 @@ cur = cnx.cursor()
 @app.route("/")
 def index():
     return render_template('index.html')
-
+@app.route('/update')
+def update():
+    return render_template('update.html')
 @app.route("/login")
 def login():
     return render_template('login.html')
-
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
-
 @app.route("/param")
 def param():
     return render_template('param.html')
-
 @app.route('/logout')
 def logout():
     session.pop('loggedin', None)
@@ -38,7 +40,6 @@ def logout():
     session.pop('pseudo', None)
     session.pop('date', None)
     return redirect(url_for('index'))
-
 @app.route('/login2', methods =['GET', 'POST'])
 def login2():
     msg = ''
@@ -52,14 +53,13 @@ def login2():
             session['id'] = account[0]
             session['mail'] = account[1]
             session['pseudo'] = account[2]
-            session['date'] = account[3]
+            session['date'] = account[4]
             msg = 'Logged in successfully !'
             print(msg)
             return render_template('index.html', msg = msg)
         else:
             msg = 'Incorrect pseudo / password !'
     return render_template('login.html', msg = msg)
-
 @app.route('/register', methods =['GET', 'POST'])
 def register():
     msg = ''
@@ -96,10 +96,6 @@ def delete():
     logout()
     return render_template('index.html')
 
-@app.route('/update')
-def update():
-    return render_template('update.html')
-
 @app.route('/update2', methods =['GET', 'POST'])
 def update2():
     mail = session['mail']
@@ -111,6 +107,32 @@ def update2():
     cur.execute(sql, val)
     cnx.commit()
     return render_template('index.html')
+
+@app.route('/upload_img', methods = ['GET', 'POST'])
+def upload_img():
+    if request.method == 'POST':
+        img = request.form.get('file')
+        print(img)
+        res = imghdr.what(img)
+        print(res)
+        mail = session['mail']
+        cur.execute('SELECT * FROM img INNER JOIN user ON image.id_pp = user.id WHERE user.mail = %s', (mail))
+        account = cur.fetchone()
+        if res == 'png':
+            if account:
+                val =  img, mail
+                sql = "UPDATE image FROM img INNER JOIN user ON image.id_pp = user.id SET img = %s, WHERE user.mail = %s"
+                cur.execute(sql, val)
+                cnx.commit()
+            else:
+                val = img
+                sql = "INSERT INTO img (img) VALUES (%s)"
+                cur.execute(sql, val)
+                cnx.commit()
+                msg = 'Bien enregistrer'
+        else : 
+            msg = 'Nous ne prennons compte que des fichier .png'
+    return render_template('param.html', msg = msg)
 
 if __name__=='__main__':
     app.run(debug= True)

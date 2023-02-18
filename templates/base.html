@@ -8,11 +8,10 @@
     <title>Flask Auth Example</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
     <link rel="stylesheet" href="static/css/style.css">
+    <script src='static/java/scripts.js' async></script>
 </head>
-
 <body>
     <section class="hero is-primary is-fullheight">
-
         <div class="hero-head">
             <nav class="navbar">
                 <div class="container">
@@ -27,19 +26,15 @@
                             <a href="{{ url_for('param') }}" >
                                 <img 
                                 src="/static/img/param.png"
-                                alt="Param button" height="35%" width="35%">
+                                alt="Param button" height="70px" width="70px">
                             </a>
                         </div>
-                        
                     </div>
                 </div>
-                
             </nav>
-            
         </div>
-        <div class="hero-body">
+        <div class="">
             <div class="container has-text-centered">
-            
                {% block content %}
                
                {% endblock %}
