@@ -93,3 +93,5 @@ def verifCompteCreer(mails):
     cur.execute(requete)
     test = cur.fetchone()
     return test 
+
+test
