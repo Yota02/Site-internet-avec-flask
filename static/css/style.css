@@ -87,6 +87,11 @@
     text-align: left;
 }
 
+.box2 {
+    top: 40%; 
+
+}
+
 /* slide */
 
 * {box-sizing:border-box}
