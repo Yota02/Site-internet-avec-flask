@@ -3,6 +3,7 @@ from datetime import datetime
 import mysql.connector
 from werkzeug.utils import secure_filename
 
+
 app = Flask(__name__)
 
 
@@ -13,6 +14,7 @@ cnx = mysql.connector.connect(host = 'localhost',
                               database = 'bdmain')
 
 app.secret_key = b'74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
+
 
 cur = cnx.cursor()
 
@@ -55,7 +57,6 @@ def login():
         return render_template('login.html', msg = msg)
     else : 
         return render_template('login.html')
-
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
@@ -70,7 +71,6 @@ def logout():
     session.pop('pseudo', None)
     session.pop('date', None)
     return redirect(url_for('index'))
-
 @app.route('/register', methods =['GET', 'POST'])
 def register():
     msg = ''
@@ -111,7 +111,8 @@ def delete():
 def upload_img():
     if request.method == 'POST':
         img = request.form.get('file')
-        img(secure_filename(img.filename))
+        print(img)
+        img.save(secure_filename(img.filename))
         mail = session['mail']
         sql = f"SELECT * FROM user WHERE mail = '{mail}'"
         cur.execute(sql)
@@ -124,7 +125,17 @@ def upload_img():
             msg = 'Bien enregistrer'
     return render_template('param.html', msg = msg)
 
+
+@app.route('/upload_file', methods = ['GET', 'POST'])
+def upload_file():
+   if request.method == 'POST':
+      f = request.files['file']
+      f.save(secure_filename(f.filename))
+      print(f)
+      return 'file uploaded successfully'
+
 if __name__=='__main__':
+    
     app.run(debug= True)
 
 cnx.close()
