@@ -132,7 +132,8 @@ def upload_file():
       f = request.files['file']
       f.save(secure_filename(f.filename))
       print(f)
-      return 'file uploaded successfully'
+      msg = 'image bien enregistrer'
+      return render_template('param.html', msg = msg)
 
 if __name__=='__main__':
     
