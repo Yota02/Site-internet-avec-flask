@@ -96,5 +96,8 @@ def verifCompteCreer(mails):
 
 test
 
-
+val =  f, mail
+        sql = "INSERT INTO img ('nom', 'taille', 'type', 'bin') VALUES (%s, %s,%s, %s) FROM user INNER JOIN img.id = user.id WHERE user.mail = %s"
+        cur.execute(sql, val)
+        cnx.commit()
 

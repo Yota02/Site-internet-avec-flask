@@ -2,11 +2,15 @@ from flask import *
 from datetime import datetime
 import mysql.connector
 from werkzeug.utils import secure_filename
-
+import os
+from flask import send_from_directory
 
 app = Flask(__name__)
 
-
+UPLOAD_FOLDER = ''
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 cnx = mysql.connector.connect(host = 'localhost',
                               user = 'root',
@@ -125,15 +129,39 @@ def upload_img():
             msg = 'Bien enregistrer'
     return render_template('param.html', msg = msg)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/upload_file', methods = ['GET', 'POST'])
+@app.route('/uploads/<name>')
+def download_file(name):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
+
+@app.route('/upload_file', methods=['GET', 'POST'])
 def upload_file():
-   if request.method == 'POST':
-      f = request.files['file']
-      f.save(secure_filename(f.filename))
-      print(f)
-      msg = 'image bien enregistrer'
-      return render_template('param.html', msg = msg)
+    mail = session['mail']
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
+    return render_template('param.html')
+
+
+@app.route('/upload_file2', methods = ['GET', 'POST'])
+def upload_file2():
+    if request.method == 'POST':
+        mail = session['mail']
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        msg = 'image bien enregistrer'
+        return render_template('param.html', msg = msg)
+    else:
+        msg = 'Image non enregistrer'
+        return render_template('param.html', msg = msg)
+
 
 if __name__=='__main__':
     
