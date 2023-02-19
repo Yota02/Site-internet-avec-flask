@@ -20,9 +20,12 @@
                             <a href="{{ url_for('index') }}" class="navbar-item">
                                 Accueil
                             </a>
+                            {% if session['pseudo'] %}
+                            {% else%}
                             <a href="{{ url_for('login') }}" class="navbar-item">
                                 Se connecter
                             </a>
+                            {%endif%}
                             <a href="{{ url_for('param') }}" >
                                 <img 
                                 src="/static/img/param.png"
