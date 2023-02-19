@@ -95,3 +95,6 @@ def verifCompteCreer(mails):
     return test 
 
 test
+
+
+
