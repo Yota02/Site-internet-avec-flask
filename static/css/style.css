@@ -162,3 +162,18 @@
     position: absolute;
     text-align: center;
 }
+
+.avatar {
+    text-align: left;
+}
+
+.avatarcontent{
+    position: static;
+    background-color: aqua;
+    overflow:hidden;
+    min-width: 20px;
+    height: 80px;
+    top: 85%;
+    left: 87%;
+    width: 12%;
+}

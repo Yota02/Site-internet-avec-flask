@@ -101,3 +101,17 @@ val =  f, mail
         cur.execute(sql, val)
         cnx.commit()
 
+
+<div class="avatarcontent"> 
+            <div class="avatar" >
+                {%if session['avatar'] %}
+                <img 
+                src="/static/img/"
+                 height="70px" width="70px">
+                {%else%}
+                 <img 
+                src="/static/img/icone_defaut.png"
+             width="60px">
+                {% endif%} 
+            </div>
+        </div>
