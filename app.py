@@ -4,8 +4,14 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory
+from flask_avatar import Avatar
+import hashlib
+
 
 app = Flask(__name__)
+
+avatars = Avatar(app)
+avatar_hash = hashlib.md5(my_email.lower().encode('utf-8')).hexdigest()
 
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
