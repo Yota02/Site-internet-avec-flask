@@ -4,14 +4,9 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory
-from flask_avatar import Avatar
 import hashlib
 
-
 app = Flask(__name__)
-
-avatars = Avatar(app)
-avatar_hash = hashlib.md5(my_email.lower().encode('utf-8')).hexdigest()
 
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -95,7 +90,7 @@ def register():
             msg = 'Account already exists !'
         else:
             val = mail, pseudo, mdp, date
-            sql = "INSERT INTO user (mail, pseudo, password, date, avatar) VALUES (%s, %s, %s, %s)"
+            sql = "INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)"
             cur.execute(sql, val)
             cnx.commit()
             msg = 'You have successfully registered !'
@@ -168,9 +163,7 @@ def upload_file2():
         msg = 'Image non enregistrer'
         return render_template('param.html', msg = msg)
 
-
 if __name__=='__main__':
-    
     app.run(debug= True)
 
 cnx.close()
