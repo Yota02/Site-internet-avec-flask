@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div> 
     <h1 class = "param"> 
        Paramètres
@@ -45,20 +44,29 @@
            
         </div>
     </div>
-    <div class = "block"> 
-    <br>
-    <?php
-         include ("transfert.php");
-         if ( isset($_FILES['fic']) )
-         {
-             transfert();
-         }
-      ?>
-    <form enctype="multipart/form-data" action="#" method="post">
-         <input type="hidden" name="MAX_FILE_SIZE" value="250000" />
-         <input type="file" name="fic" size=50 />
-         <input type="submit" value="Envoyer" />
-      </form>
-
+<div class = "block"> 
+<?php
+error_reporting(0);
+ 
+$msg = "";
+if (isset($_POST['upload'])) {
+    $filename = $_FILES["uploadfile"]["name"];
+    $tempname = $_FILES["uploadfile"]["tmp_name"];
+    $folder = "./image/" . $filename;
+    $db = mysqli_connect("localhost", "root", "", "geeksforgeeks");
+    $sql = "INSERT INTO image (filename) VALUES ('$filename')";
+    mysqli_query($db, $sql);
+}
+?>
+<div id="content">
+        <form method="POST" action="" enctype="multipart/form-data">
+            <div class="form-group">
+                <input class="form-control" type="file" name="uploadfile" value="" />
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" name="upload">UPLOAD</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
-

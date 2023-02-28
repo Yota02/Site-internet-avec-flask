@@ -20,12 +20,12 @@ cnx = mysql.connector.connect(host = 'localhost',
 
 app.secret_key = b'74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
 
-
 cur = cnx.cursor()
 
 @app.route("/")
 def index():
         return render_template('index.html')
+
 @app.route('/update', methods =['GET', 'POST'])
 def update():
     if request.method == 'POST' :
@@ -40,6 +40,7 @@ def update():
         return render_template('index.html')
     else :
         return render_template('update.html')
+    
 @app.route("/login", methods =['GET', 'POST'])
 def login():
     msg = ''
@@ -62,12 +63,15 @@ def login():
         return render_template('login.html', msg = msg)
     else : 
         return render_template('login.html')
+    
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
 @app.route("/param")
 def param():
     return render_template('param.php')
+
 @app.route('/logout')
 def logout():
     session.pop('loggedin', None)
