@@ -113,8 +113,8 @@ def delete():
     logout()
     return render_template('index.html') 
 
-@app.route('/upload_img', methods = ['GET', 'POST'])
-def upload_img():
+#@app.route('/upload_img', methods = ['GET', 'POST'])
+#def upload_img():
     if request.method == 'POST':
         img = request.form.get('file')
         print(img)
@@ -131,16 +131,17 @@ def upload_img():
             msg = 'Bien enregistrer'
     return render_template('param.html', msg = msg)
 
-def allowed_file(filename):
+#def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/uploads/<name>')
-def download_file(name):
+#@app.route('/uploads/<name>')
+#def download_file(name):
     return send_from_directory(app.config["UPLOAD_FOLDER"], name)
 
-@app.route('/upload_file', methods=['GET', 'POST'])
-def upload_file():
+
+#@app.route('/upload_file', methods=['GET', 'POST'])
+#def upload_file():
     mail = session['mail']
     if request.method == 'POST':
         file = request.files['file']
@@ -151,8 +152,8 @@ def upload_file():
     return render_template('param.html')
 
 
-@app.route('/upload_file2', methods = ['GET', 'POST'])
-def upload_file2():
+#@app.route('/upload_file2', methods = ['GET', 'POST'])
+#def upload_file2():
     if request.method == 'POST':
         mail = session['mail']
         file = request.files['file']

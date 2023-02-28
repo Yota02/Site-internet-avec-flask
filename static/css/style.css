@@ -9,7 +9,8 @@
     height: 200px;
     text-align: left;
     overflow:hidden;
-    border:solid 2px #adadad;   
+    border:solid 2px #adadad; 
+    color: black; 
   }
 
 .block2{

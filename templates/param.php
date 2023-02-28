@@ -44,27 +44,69 @@
            <br> 
            
         </div>
-    
-        
     </div>
-<?php
-    include ("transfert.php");
-    if ( isset($_FILES['fic']) )
-    {
-        transfert();
+    <?php
+
+require './bdd.php';
+
+if(isset($_FILES['file'])){
+    $tmpName = $_FILES['file']['tmp_name'];
+    $name = $_FILES['file']['name'];
+    $size = $_FILES['file']['size'];
+    $error = $_FILES['file']['error'];
+
+    $tabExtension = explode('.', $name);
+    $extension = strtolower(end($tabExtension));
+
+    $extensions = ['jpg', 'png', 'jpeg', 'gif'];
+    $maxSize = 400000;
+
+    if(in_array($extension, $extensions) && $size <= $maxSize && $error == 0){
+
+        $uniqueName = uniqid('', true);
+        
+        $file = $uniqueName.".".$extension;
+
+        move_uploaded_file($tmpName, './upload/'.$file);
+
+        $req = $db->prepare('INSERT INTO images (name) VALUES (?)');
+        $req->execute([$file]);
+
+        echo "Image enregistrée";
     }
- ?>
+    else{
+        echo "Une erreur est survenue";
+    }
+}
+
+?>
     <div class = "block"> 
         <br>
-        <form enctype="multipart/form-data" action="#" method="post">
-            <input type="hidden" name="MAX_FILE_SIZE" value="250000" />
-            <input type="file" name="fic" size=50 />
-            <input type="submit" value="Envoyer" />
-         </form>
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+    Select Image File to Upload:
+    <input type="file" name="file">
+    <input type="submit" name="submit" value="Upload">
+        </form>
+
+
+    <h2>Mes images</h2>
+    <?php
+include 'dbConfig.php';
+
+$query = $db->query("SELECT * FROM images ORDER BY uploaded_on DESC");
+
+if($query->num_rows > 0){
+    while($row = $query->fetch_assoc()){
+        $imageURL = 'uploads/'.$row["file_name"];
+?>
+    <img src="<?php echo $imageURL; ?>" alt="" />
+<?php }
+}else{ ?>
+    <p>No image(s) found...</p>
+<?php } ?>
     </div>
 
 </div>
-
 
 {% endblock %}
 
