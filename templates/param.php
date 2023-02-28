@@ -47,13 +47,20 @@
     
         
     </div>
+<?php
+    include ("transfert.php");
+    if ( isset($_FILES['fic']) )
+    {
+        transfert();
+    }
+ ?>
     <div class = "block"> 
         <br>
-        <form method="post" enctype="multipart/form-data" action = {{url_for('upload_file')}}>
-            <div class="msg">{{ msg }}</div>
-            <input type="file" name="file">
-            <input type="submit">
-        </form> 
+        <form enctype="multipart/form-data" action="#" method="post">
+            <input type="hidden" name="MAX_FILE_SIZE" value="250000" />
+            <input type="file" name="fic" size=50 />
+            <input type="submit" value="Envoyer" />
+         </form>
     </div>
 
 </div>

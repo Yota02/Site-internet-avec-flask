@@ -67,7 +67,7 @@ def signup():
     return render_template('signup.html')
 @app.route("/param")
 def param():
-    return render_template('param.html')
+    return render_template('param.php')
 @app.route('/logout')
 def logout():
     session.pop('loggedin', None)
@@ -76,6 +76,7 @@ def logout():
     session.pop('pseudo', None)
     session.pop('date', None)
     return redirect(url_for('index'))
+
 @app.route('/register', methods =['GET', 'POST'])
 def register():
     msg = ''

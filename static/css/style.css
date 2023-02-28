@@ -177,3 +177,9 @@
     left: 87%;
     width: 12%;
 }
+
+.error404{
+    position: static;
+    top: 10%;
+    width: 65%;
+}
