@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+ 
+    <h1 class = "param"> 
+       PP
+    </h1> 
+    <br>
+    <div class = "block3"> 
+    <br>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                 {% for message in messages %}
+                   <div class="alert alert-success">
+                    <strong>{{ message }}</strong>
+                  </div>
+                 {% endfor %}
+                  {% endif %}
+                {% endwith %}
+               </p>
+        <div>
+    {% if session['pp'] == true%}
+    <p> modifier </p>
+        <form method="post" action="/modif_pp" enctype="multipart/form-data" class="form-inline">
+            <div class="form-group">
+                <label>Choose Images: </label>
+                <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
+            </div>
+            <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+        </form>
+    {%else%}
+    <p> initier </p>
+    <form method="post" action="/upload_pp" enctype="multipart/form-data" class="form-inline">
+        <div class="form-group">
+            <label>Choose Images: </label>
+            <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
+        </div>
+        <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+    </form>
+    {%endif%}
+</div>  
+</div>
+ <script>
+    $(document).ready(function(){
+     
+        $("#fileInput").change(function(){
+            var fileLength = this.files.length;
+            var match= ["image/jpeg","image/png","image/jpg","image/gif"];
+            var i;
+            for(i = 0; i < fileLength; i++){ 
+                var file = this.files[i];
+                var imagefile = file.type;
+                if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2]) || (imagefile==match[3]))){
+                    alert('Please select a valid image file (JPEG/JPG/PNG/GIF).');
+                    $("#fileInput").val('');
+                    return false;
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+

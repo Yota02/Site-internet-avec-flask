@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div> 
+<div > 
     <h1 class = "param"> 
        Paramètres
     </h1> 
@@ -11,11 +11,18 @@
             Profil 
         </h2>
     </div>
+
     <div class="block">
+
         {% if session['pp'] == True %}
+        <a href="{{ url_for('upload_avatar') }}"></a>
         <img class = "pp" src= "{{image}}" height="13%" width="13%">
+        </a>
         {% else %}
-        <img class = "pp" src="static/uploads/icone_defaut.png" height="13%" width="13%">
+        <a href="{{ url_for('upload_avatar') }}">
+            <img class = "pp" src="static/uploads/icone_defaut.png" height="13%" width="13%">
+        </a>
+
         {%endif%}
         <div class="marging"> 
 
@@ -49,53 +56,9 @@
            
         </div>
     </div>
-    <div class = "block"> 
-    <br>
+
     
-    <div class="row">
-        <div class="col-lg-12">
-            <p>
-                {% with messages = get_flashed_messages() %}
-                  {% if messages %}
-                 {% for message in messages %}
-                   <div class="alert alert-success">
-                    <strong>{{ message }}</strong>
-                  </div>
-                 {% endfor %}
-                  {% endif %}
-                {% endwith %}
-               </p>
-  <div>
-   
-    <form method="post" action="/upload_pp" enctype="multipart/form-data" class="form-inline">
-        <div class="form-group">
-            <label>Choose Images: </label>
-            <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
-        </div>
-            <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
-    </form>
-  </div>
-  </div>
- </div>
- <script>
-    $(document).ready(function(){
-     
-        $("#fileInput").change(function(){
-            var fileLength = this.files.length;
-            var match= ["image/jpeg","image/png","image/jpg","image/gif"];
-            var i;
-            for(i = 0; i < fileLength; i++){ 
-                var file = this.files[i];
-                var imagefile = file.type;
-                if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2]) || (imagefile==match[3]))){
-                    alert('Please select a valid image file (JPEG/JPG/PNG/GIF).');
-                    $("#fileInput").val('');
-                    return false;
-                }
-            }
-        });
-    });
-    </script>
+    
 
 {% endblock %}
 

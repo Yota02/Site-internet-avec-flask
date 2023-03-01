@@ -6,7 +6,6 @@ import os
 from flask_mysqldb import MySQL,MySQLdb
 import MySQLdb.cursors
 
-
 app = Flask(__name__)
 
 cnx = mysql.connector.connect(host = 'localhost',
@@ -37,6 +36,10 @@ with app.app_context():
 def index():
     return render_template('index.html')
 
+@app.route('/upload_avatar')
+def upload_avatar():
+    return render_template('upload_avatar.html')
+
 @app.route('/update', methods =['GET', 'POST'])
 def update():
     if request.method == 'POST' :
@@ -61,7 +64,6 @@ def login():
         password = request.form['password']
         cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, password))
         account = cur.fetchone() 
-    
         if account:
             session['loggedin'] = True
             session['id'] = account[0]
@@ -82,8 +84,12 @@ def signup():
 
 @app.route("/param")
 def param():
+    return render_template('param.html')
+
+@app.route("/avatar")
+def avatar():
     file = os.path.join(img, session['avatar'])
-    return render_template('param.html',image=file)
+    return file
 
 @app.route('/logout')
 def logout():
@@ -162,18 +168,40 @@ def upload_pp():
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     now = datetime.now()
     if request.method == 'POST':
-        files = request.files.getlist('files[]')
-        for file in files:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                cur1.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
-                mysql.connection.commit()
-                session['pp'] = True
-                session['avatar'] = filename
-        cur1.close()   
-        flash('File(s) successfully uploaded')    
+            files = request.files.getlist('files[]')
+            for file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    cur1.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
+                    mysql.connection.commit()
+                    session['pp'] = True
+                    session['avatar'] = filename
+            cur1.close()   
+            flash('File(s) successfully uploaded')    
     return redirect('param')
+
+@app.route("/modif_pp",methods=["POST","GET"])
+def modif_pp():
+    id = session['id']
+    cursor = mysql.connection.cursor()
+    cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    now = datetime.now()
+    if request.method == 'POST':
+            files = request.files.getlist('files[]')
+            for file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    cur1.execute("UPDATE avatar SET file_name = %s, uploaded_on = %s WHERE id = %s",[filename, now, id])
+                    mysql.connection.commit()
+                    session['pp'] = True
+                    session['avatar'] = filename
+            cur1.close()   
+            flash('File(s) successfully uploaded')    
+    return redirect('param')
+
+
 
 
 if __name__=='__main__':

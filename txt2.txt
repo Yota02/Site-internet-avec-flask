@@ -1,0 +1,26 @@
+cur.execute('SELECT * FROM avatar WHERE id = %s ', (id))
+account = cur.fetchone()
+if account:
+            files = request.files.getlist('files[]')
+            for file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    cur1.execute("UPDATE avatar SET file_name = %s, uploaded_on = %s WHERE id = %s",[filename, now, id])
+                    mysql.connection.commit()
+                    session['pp'] = True
+                    session['avatar'] = filename
+            cur1.close()   
+            flash('File(s) successfully uploaded') 
+        else :
+            files = request.files.getlist('files[]')
+            for file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    cur1.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
+                    mysql.connection.commit()
+                    session['pp'] = True
+                    session['avatar'] = filename
+            cur1.close()   
+            flash('File(s) successfully uploaded')
