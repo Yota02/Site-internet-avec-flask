@@ -11,6 +11,11 @@ import urllib.request
 
 app = Flask(__name__)
 
+cnx = mysql.connector.connect(host = 'localhost',
+                              user = 'root',
+                              password = '',
+                              database = 'bdmain')
+
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -23,8 +28,10 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
+cur = cnx.cursor()
+
 with app.app_context():
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
 @app.route("/")
 def index():
@@ -54,7 +61,7 @@ def login():
         password = request.form['password']
         cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, password))
         account = cur.fetchone() 
-        cur.close()
+    
         if account:
             session['loggedin'] = True
             session['id'] = account[0]
@@ -149,7 +156,7 @@ def upload():
 def upload_pp():
     id = session['id']
     cursor = mysql.connection.cursor()
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     now = datetime.now()
     if request.method == 'POST':
         files = request.files.getlist('files[]')
@@ -157,14 +164,12 @@ def upload_pp():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                cur.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
+                cur1.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
                 mysql.connection.commit()
                 session['avatar'] = filename
-        cur.close()   
+        cur1.close()   
         flash('File(s) successfully uploaded')    
     return redirect('/')
-
-
 
 if __name__=='__main__':
     app.run(debug= True)
