@@ -1,13 +1,11 @@
-from flask import request, Flask, session, render_template, flash, redirect
+from flask import request, Flask, session, render_template, flash, redirect, url_for
 from datetime import datetime
 import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 from flask_mysqldb import MySQL,MySQLdb
 import MySQLdb.cursors
-from flask import send_from_directory
-import hashlib
-import urllib.request
+
 
 app = Flask(__name__)
 
@@ -30,12 +28,14 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 cur = cnx.cursor()
 
+img = os.path.join('static', 'uploads')
+
 with app.app_context():
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
 @app.route("/")
 def index():
-        return render_template('index.html')
+    return render_template('index.html')
 
 @app.route('/update', methods =['GET', 'POST'])
 def update():
@@ -82,7 +82,8 @@ def signup():
 
 @app.route("/param")
 def param():
-    return render_template('param.html')
+    file = os.path.join(img, session['avatar'])
+    return render_template('param.html',image=file)
 
 @app.route('/logout')
 def logout():
@@ -91,6 +92,8 @@ def logout():
     session.pop('id', None)
     session.pop('pseudo', None)
     session.pop('date', None)
+    session.pop('avatar', None)
+    session.pop('pp', None)
     return redirect(url_for('index'))
 
 @app.route('/register', methods =['GET', 'POST'])
@@ -166,10 +169,12 @@ def upload_pp():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 cur1.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
                 mysql.connection.commit()
+                session['pp'] = True
                 session['avatar'] = filename
         cur1.close()   
         flash('File(s) successfully uploaded')    
-    return redirect('/')
+    return redirect('param')
+
 
 if __name__=='__main__':
     app.run(debug= True)

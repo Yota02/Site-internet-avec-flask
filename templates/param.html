@@ -12,7 +12,11 @@
         </h2>
     </div>
     <div class="block">
-        <img class = "pp" src="static/img/icone_defaut.png" height="13%" width="13%">
+        {% if session['pp'] == True %}
+        <img class = "pp" src= "{{image}}" height="13%" width="13%">
+        {% else %}
+        <img class = "pp" src="static/uploads/icone_defaut.png" height="13%" width="13%">
+        {%endif%}
         <div class="marging"> 
 
             <br>
@@ -47,7 +51,7 @@
     </div>
     <div class = "block"> 
     <br>
-    <h2>Python Flask Upload Multiple Images and insert to database using mysqldb</h2>
+    
     <div class="row">
         <div class="col-lg-12">
             <p>
@@ -63,13 +67,13 @@
                </p>
   <div>
    
-   <form method="post" action="/upload_pp" enctype="multipart/form-data" class="form-inline">
-    <div class="form-group">
-                      <label>Choose Images: </label>
-                      <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
-                 </div>
-                 <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
-             </form>
+    <form method="post" action="/upload_pp" enctype="multipart/form-data" class="form-inline">
+        <div class="form-group">
+            <label>Choose Images: </label>
+            <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
+        </div>
+            <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+    </form>
   </div>
   </div>
  </div>
