@@ -1,15 +1,15 @@
-from flask import *
+from flask import request, Flask, session, render_template, flash, redirect
 from datetime import datetime
 import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 from flask_mysqldb import MySQL,MySQLdb
+import MySQLdb.cursors
 from flask import send_from_directory
 import hashlib
 import urllib.request
 
 app = Flask(__name__)
-
 
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
 app.config['MYSQL_HOST'] = 'localhost'
@@ -17,14 +17,14 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'bdmain'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
 mysql = MySQL(app)
 
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
 with app.app_context():
-    cur = mysql.connection.cursor()
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
 @app.route("/")
 def index():
@@ -41,6 +41,7 @@ def update():
         sql = "UPDATE user SET mail = %s, pseudo = %s, password = %s WHERE mail = %s"
         cur.execute(sql, val)
         mysql.connection.commit()
+        cur.close()
         return render_template('index.html')
     else :
         return render_template('update.html')
@@ -52,7 +53,8 @@ def login():
         mail = request.form['mail']
         password = request.form['password']
         cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, password))
-        account = cur.fetchone()
+        account = cur.fetchone() 
+        cur.close()
         if account:
             session['loggedin'] = True
             session['id'] = account[0]
@@ -60,7 +62,6 @@ def login():
             session['pseudo'] = account[2]
             session['date'] = account[4]
             msg = 'Logged in successfully !'
-            print(msg)
             return render_template('index.html', msg = msg)
         else:
             msg = 'Incorrect pseudo / password !'
@@ -74,7 +75,7 @@ def signup():
 
 @app.route("/param")
 def param():
-    return render_template('param.php')
+    return render_template('param.html')
 
 @app.route('/logout')
 def logout():
@@ -95,6 +96,7 @@ def register():
         date = datetime.now()
         cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, mdp))
         account = cur.fetchone()
+        cur.close()
         if account:
             msg = 'Account already exists !'
         else:
@@ -102,6 +104,7 @@ def register():
             sql = "INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)"
             cur.execute(sql, val)
             mysql.connection.commit()
+            cur.close()
             msg = 'You have successfully registered !'
     else:
         if 'pseudo' in session:
@@ -117,6 +120,7 @@ def delete():
     mail = session['mail']
     sql = f"DELETE FROM user WHERE mail = '{mail}'"
     cur.execute(sql)
+    cur.close()
     print("suppréssion réussis")
     logout()
     return render_template('index.html') 
@@ -141,10 +145,29 @@ def upload():
         flash('File(s) successfully uploaded')    
     return redirect('/')
 
+@app.route("/upload_pp",methods=["POST","GET"])
+def upload_pp():
+    id = session['id']
+    cursor = mysql.connection.cursor()
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    now = datetime.now()
+    if request.method == 'POST':
+        files = request.files.getlist('files[]')
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                cur.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
+                mysql.connection.commit()
+                session['avatar'] = filename
+        cur.close()   
+        flash('File(s) successfully uploaded')    
+    return redirect('/')
+
 if __name__=='__main__':
     app.run(debug= True)
 
-mysql.connection.close()
+cur.close()
 
 
 
