@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div> 
+    <h1 class = "param"> 
+       Paramètres
+    </h1> 
+    <br>
+    <div class = "block2" > 
+        <h2 class="noir-profil-titre "> 
+            Profil 
+        </h2>
+    </div>
+    <div class="block">
+        <img class = "pp" src="static/img/icone_defaut.png" height="13%" width="13%">
+        <div class="marging"> 
+
+            <br>
+            <h1 class="noir-profil">
+                Pseudo : {{session.pseudo}}
+                <br> 
+                id : {{session.id}}
+                <br>
+                mail : {{session.mail}}
+                <br>
+                date d'inscription : {{session.date}}
+                <br>
+           </h1>
+           
+           <br>
+           <p class="logout "> 
+            <a href="{{ url_for('logout') }}" >
+                Se déconnecter
+            </a> </p>
+            <p class="update "> 
+                <a href="{{ url_for('update') }}" >
+                Actualisé
+            </a> </p>
+            <p class="delet "> 
+                <a href="{{ url_for('delete') }}" >
+                    Supprimé
+                </a> 
+            </p>
+           <br> 
+           
+        </div>
+    </div>
+    <div class = "block"> 
+    <br>
+    <h2>Python Flask Upload Multiple Images and insert to database using mysqldb</h2>
+    <div class="row">
+        <div class="col-lg-12">
+            <p>
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                 {% for message in messages %}
+                   <div class="alert alert-success">
+                    <strong>{{ message }}</strong>
+                  </div>
+                 {% endfor %}
+                  {% endif %}
+                {% endwith %}
+               </p>
+  <div>
+   
+   <form method="post" action="/upload" enctype="multipart/form-data" class="form-inline">
+    <div class="form-group">
+                      <label>Choose Images: </label>
+                      <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
+                 </div>
+                 <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+             </form>
+  </div>
+  </div>
+ </div>
+ <script>
+    $(document).ready(function(){
+     
+        $("#fileInput").change(function(){
+            var fileLength = this.files.length;
+            var match= ["image/jpeg","image/png","image/jpg","image/gif"];
+            var i;
+            for(i = 0; i < fileLength; i++){ 
+                var file = this.files[i];
+                var imagefile = file.type;
+                if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2]) || (imagefile==match[3]))){
+                    alert('Please select a valid image file (JPEG/JPG/PNG/GIF).');
+                    $("#fileInput").val('');
+                    return false;
+                }
+            }
+        });
+    });
+    </script>
+
+{% endblock %}
+

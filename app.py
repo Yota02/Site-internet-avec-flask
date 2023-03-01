@@ -3,24 +3,28 @@ from datetime import datetime
 import mysql.connector
 from werkzeug.utils import secure_filename
 import os
+from flask_mysqldb import MySQL,MySQLdb
 from flask import send_from_directory
 import hashlib
+import urllib.request
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = ''
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
+
+app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'bdmain'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+mysql = MySQL(app)
+
+UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-cnx = mysql.connector.connect(host = 'localhost',
-                              user = 'root',
-                              password = '',
-                              database = 'bdmain')
-
-app.secret_key = b'74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
-
-cur = cnx.cursor()
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+with app.app_context():
+    cur = mysql.connection.cursor()
 
 @app.route("/")
 def index():
@@ -36,7 +40,7 @@ def update():
         val = mail2, pseudo, mdp, mail
         sql = "UPDATE user SET mail = %s, pseudo = %s, password = %s WHERE mail = %s"
         cur.execute(sql, val)
-        cnx.commit()
+        mysql.connection.commit()
         return render_template('index.html')
     else :
         return render_template('update.html')
@@ -97,7 +101,7 @@ def register():
             val = mail, pseudo, mdp, date
             sql = "INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)"
             cur.execute(sql, val)
-            cnx.commit()
+            mysql.connection.commit()
             msg = 'You have successfully registered !'
     else:
         if 'pseudo' in session:
@@ -117,62 +121,30 @@ def delete():
     logout()
     return render_template('index.html') 
 
-#@app.route('/upload_img', methods = ['GET', 'POST'])
-#def upload_img():
+def allowed_file(filename):
+ return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ 
+@app.route("/upload",methods=["POST","GET"])
+def upload():
+    cursor = mysql.connection.cursor()
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    now = datetime.now()
     if request.method == 'POST':
-        img = request.form.get('file')
-        print(img)
-        img.save(secure_filename(img.filename))
-        mail = session['mail']
-        sql = f"SELECT * FROM user WHERE mail = '{mail}'"
-        cur.execute(sql)
-        account = cur.fetchone()
-        if account:
-            val =  img, mail
-            sql = "UPDATE user SET avatar = %s WHERE mail = %s"
-            cur.execute(sql, val)
-            cnx.commit()
-            msg = 'Bien enregistrer'
-    return render_template('param.html', msg = msg)
-
-#def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-#@app.route('/uploads/<name>')
-#def download_file(name):
-    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
-
-
-#@app.route('/upload_file', methods=['GET', 'POST'])
-#def upload_file():
-    mail = session['mail']
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return render_template('param.html')
-
-
-#@app.route('/upload_file2', methods = ['GET', 'POST'])
-#def upload_file2():
-    if request.method == 'POST':
-        mail = session['mail']
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        msg = 'image bien enregistrer'
-        return render_template('param.html', msg = msg)
-    else:
-        msg = 'Image non enregistrer'
-        return render_template('param.html', msg = msg)
+        files = request.files.getlist('files[]')
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                cur.execute("INSERT INTO images (file_name, uploaded_on) VALUES (%s, %s)",[filename, now])
+                mysql.connection.commit()
+        cur.close()   
+        flash('File(s) successfully uploaded')    
+    return redirect('/')
 
 if __name__=='__main__':
     app.run(debug= True)
 
-cnx.close()
+mysql.connection.close()
 
 
 
