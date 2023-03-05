@@ -161,6 +161,10 @@ def upload():
         flash('File(s) successfully uploaded')    
     return redirect('/')
 
+@app.route('/display/<filename>')
+def display_image(filename):
+    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+
 @app.route("/upload_pp",methods=["POST","GET"])
 def upload_pp():
     id = session['id']
@@ -200,9 +204,6 @@ def modif_pp():
             cur1.close()   
             flash('File(s) successfully uploaded')    
     return redirect('param')
-
-
-
 
 if __name__=='__main__':
     app.run(debug= True)

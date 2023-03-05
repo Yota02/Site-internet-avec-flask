@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
  
-    <h1 class = "param"> 
-       PP
-    </h1> 
+
+<h3 class="titre-blanc">Actualiser la photo de profil</h3>
     <br>
-    <div class = "block3"> 
+    <div class="block5"> 
     <br>
         <div class="row">
             <div class="col-lg-12">
@@ -31,13 +30,13 @@
             <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
         </form>
     {%else%}
-    <p> initier </p>
     <form method="post" action="/upload_pp" enctype="multipart/form-data" class="form-inline">
         <div class="form-group">
-            <label>Choose Images: </label>
+            <label>Selectionez images: </label>
             <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
         </div>
-        <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+        <br>
+        <input type="submit" name="submit" class="button is-block is-info is-large is-fullwidth" value="UPLOAD"/>
     </form>
     {%endif%}
 </div>  
