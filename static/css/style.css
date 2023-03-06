@@ -11,7 +11,6 @@
     overflow:hidden;
     border:solid 2px #adadad; 
     color: black; 
-
   }
 
 .block2{
@@ -29,7 +28,7 @@
     border:solid 1px #adadad;  
     font-weight: bold;
     bottom: 400px;
-}
+}   
 
 .block3{
     position:relative;
@@ -72,7 +71,6 @@
     right: 48%;
 
 }
-
 
 .noir {
     color: black;

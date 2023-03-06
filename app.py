@@ -36,6 +36,10 @@ with app.app_context():
 def index():
     return render_template('index.html')
 
+@app.route("/uploadimage")
+def uploadimage():
+    return render_template('upload.html')
+
 @app.route('/upload_avatar')
 def upload_avatar():
     return render_template('upload_avatar.html')
@@ -146,8 +150,8 @@ def allowed_file(filename):
  
 @app.route("/upload",methods=["POST","GET"])
 def upload():
-    cursor = mysql.connection.cursor()
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    id = session['id']
+    cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     now = datetime.now()
     if request.method == 'POST':
         files = request.files.getlist('files[]')
@@ -155,10 +159,19 @@ def upload():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                cur.execute("INSERT INTO images (file_name, uploaded_on) VALUES (%s, %s)",[filename, now])
+                cur1.execute("INSERT INTO images (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
                 mysql.connection.commit()
-        cur.close()   
+        cur1.close()   
         flash('File(s) successfully uploaded')    
+    return redirect('/')
+
+@app.route("/vider", methods =['GET', 'POST'])
+def vider():
+    if request.method == 'POST' :
+        table = request.form.get('table')
+        sql = f"TRUNCATE TABLE `{table}`"
+        cur.execute(sql)
+        cur.close()
     return redirect('/')
 
 @app.route('/display/<filename>')

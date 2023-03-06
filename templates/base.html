@@ -20,10 +20,18 @@
         <div class="hero-head">
             <nav class="navbar">
                 <div class="container">
-                    <div id="navbarMenuHeroA" class="navbar-menu">
+                    <div id="navbarMenu" class="navbar-menu">
                         <div class="navbar-end">
+                            {% if session['pseudo'] == admin%}
+                            <a href="{{ url_for('admin') }}" class="navbar-item">
+                                admin
+                            </a>
+                            {%endif%}
                             <a href="{{ url_for('index') }}" class="navbar-item">
                                 Accueil
+                            </a>
+                            <a href="{{ url_for('uploadimage') }}" class="navbar-item">
+                                Upload image
                             </a>
                             {% if session['pseudo'] %}
                             {% else%}
@@ -31,11 +39,19 @@
                                 Se connecter
                             </a>
                             {%endif%}
+                            {% if session['pseudo'] %}
                             <a href="{{ url_for('param') }}" >
                                 <img 
                                 src="/static/img/param.png"
                                 alt="Param button" height="70px" width="70px">
                             </a>
+                            {% else%}
+                            <a href="{{ url_for('login') }}" >
+                                <img 
+                                src="/static/img/param.png"
+                                alt="Param button" height="70px" width="70px">
+                            </a>
+                            {%endif%}
                         </div>
                     </div>
                 </div>
