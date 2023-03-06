@@ -15,9 +15,6 @@
         
         {% if session['pp'] == True %}
         <img class = "pp" src= "{{ url_for('display_image', filename=filename) }}" height="13%" width="13%">
-        <a href="{{ url_for('upload_avatar') }}"></a>
-        
-        </a>
         {% else %}
         <a href="{{ url_for('upload_avatar') }}">
             <img class = "pp" src="static/uploads/icone_defaut.png" height="13%" width="13%">

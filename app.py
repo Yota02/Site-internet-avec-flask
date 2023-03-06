@@ -1,6 +1,7 @@
 from flask import request, Flask, session, render_template, flash, redirect, url_for
 from datetime import datetime
 import mysql.connector
+import urllib.request
 from werkzeug.utils import secure_filename
 import os
 from flask_mysqldb import MySQL,MySQLdb
@@ -21,13 +22,10 @@ app.config['MYSQL_DB'] = 'bdmain'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 cur = cnx.cursor()
-
-img = os.path.join('static', 'uploads')
 
 with app.app_context():
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -90,6 +88,10 @@ def signup():
 def param():
     return render_template('param.html')
 
+@app.route("/admin")
+def admin():
+    return render_template('admin.html')
+
 @app.route("/avatar")
 def avatar():
     file = os.path.join(img, session['avatar'])
@@ -150,6 +152,8 @@ def allowed_file(filename):
  
 @app.route("/upload",methods=["POST","GET"])
 def upload():
+    UPLOAD_FOLDER = 'static/uploads/image'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     id = session['id']
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     now = datetime.now()
@@ -169,17 +173,21 @@ def upload():
 def vider():
     if request.method == 'POST' :
         table = request.form.get('table')
-        sql = f"TRUNCATE TABLE `{table}`"
+        sql = f"DELETE FROM {table}"
         cur.execute(sql)
+        mysql.connection.commit()
         cur.close()
-    return redirect('/')
+    return redirect('/admin')
 
-@app.route('/display/<filename>')
-def display_image(filename):
-    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+@app.route("/display_image")
+def display_image():
+    Flask_Logo = os.path.join(app.config['UPLOAD_FOLDER'], 'flask-logo.png')
+    return render_template("index.html", user_image=Flask_Logo)
 
 @app.route("/upload_pp",methods=["POST","GET"])
 def upload_pp():
+    UPLOAD_FOLDER = 'static/uploads/avatar'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     id = session['id']
     cursor = mysql.connection.cursor()
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -200,6 +208,8 @@ def upload_pp():
 
 @app.route("/modif_pp",methods=["POST","GET"])
 def modif_pp():
+    UPLOAD_FOLDER = 'static/uploads/avatar'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     id = session['id']
     cursor = mysql.connection.cursor()
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)

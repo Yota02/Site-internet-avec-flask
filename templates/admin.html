@@ -1,4 +1,20 @@
-<p class=""> 
-    <a href="{{ url_for('vider') }}" >
-        Se déconnecter
-    </a> </p>
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="static/css/admin.css">
+<div class="adminbox">
+<div class = "vider"> 
+    <form method="POST" action={{url_for('vider')}}></form>
+    <label for="table"> table : </label>
+      <select name="table" id="table">
+        <option value="images">images</option>
+        <option value="avatar">avatar</option>
+    </select>
+    <button input type="submit">
+	    <span>vider</span>
+      </button>
+    </form>
+</div>
+
+
+
+{% endblock %}

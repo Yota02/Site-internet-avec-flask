@@ -22,7 +22,7 @@
                 <div class="container">
                     <div id="navbarMenu" class="navbar-menu">
                         <div class="navbar-end">
-                            {% if session['pseudo'] == admin%}
+                            {% if session['pseudo'] == 'admin' %}
                             <a href="{{ url_for('admin') }}" class="navbar-item">
                                 admin
                             </a>
