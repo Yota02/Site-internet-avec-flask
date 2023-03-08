@@ -1,5 +1,5 @@
 from flask import request, Flask, session, render_template, flash, redirect, url_for
-from datetime import datetime
+from datetime import datetime, timedelta
 import mysql.connector
 import urllib.request
 from werkzeug.utils import secure_filename
@@ -14,21 +14,26 @@ cnx = mysql.connector.connect(host = 'localhost',
                               password = '',
                               database = 'bdmain')
 
-image_name = "nothing"
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+UPLOAD_FOLDER = 'static/uploads/image'
+
+
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'bdmain'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-mysql = MySQL(app)
-
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-UPLOAD_FOLDER = 'static/uploads/image'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+mysql = MySQL(app)
 cur = cnx.cursor()
 
+@app.before_first_request
+def clear_sessions():
+    session.clear()
+    
 with app.app_context():
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
@@ -208,8 +213,8 @@ def upload_pp():
                     mysql.connection.commit()
                     session['pp'] = True
                     session['avatar'] = filename
+                    cur1.close()
                     return redirect('/profile')
-            cur1.close()   
             flash('File(s) successfully uploaded')    
     return redirect('param')
 
@@ -230,8 +235,8 @@ def modif_pp():
                     mysql.connection.commit()
                     session['pp'] = True
                     session['avatar'] = filename
+                    cur1.close()   
                     return redirect('/profile')
-            cur1.close()   
             flash('File(s) successfully uploaded')    
     return redirect('param')
 
@@ -239,7 +244,3 @@ if __name__=='__main__':
     app.run(debug= True)
 
 cur.close()
-
-
-
-
