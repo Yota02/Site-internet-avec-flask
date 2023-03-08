@@ -14,6 +14,7 @@ cnx = mysql.connector.connect(host = 'localhost',
                               password = '',
                               database = 'bdmain')
 
+image_name = "nothing"
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -22,9 +23,10 @@ app.config['MYSQL_DB'] = 'bdmain'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
-
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
+UPLOAD_FOLDER = 'static/uploads/image'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 cur = cnx.cursor()
 
 with app.app_context():
@@ -143,7 +145,7 @@ def delete():
     sql = f"DELETE FROM user WHERE mail = '{mail}'"
     cur.execute(sql)
     cur.close()
-    print("suppréssion réussis")
+    msg = "suppréssion réussis"
     logout()
     return render_template('index.html') 
 
@@ -169,27 +171,31 @@ def upload():
         flash('File(s) successfully uploaded')    
     return redirect('/')
 
-@app.route("/vider", methods =['GET', 'POST'])
-def vider():
+@app.route("/Vider", methods =['GET', 'POST'])
+def Vider():
+    msg = ''
+    print("quelque chose")
     if request.method == 'POST' :
         table = request.form.get('table')
-        sql = f"DELETE FROM {table}"
+        val = chr(table)
+        sql = "DELETE FROM '%s'"
+        cur.execute(sql, val)
         cur.execute(sql)
         mysql.connection.commit()
         cur.close()
-    return redirect('/admin')
+        msg = f"table {table} bien vidé !"
+    return render_template('admin.html', msg = msg)
 
-@app.route("/display_image")
-def display_image():
-    Flask_Logo = os.path.join(app.config['UPLOAD_FOLDER'], 'flask-logo.png')
-    return render_template("index.html", user_image=Flask_Logo)
+@app.route('/profile')
+def profile():
+    image_name = os.listdir(app.config['UPLOAD_FOLDER'])[0]
+    return render_template('param.html', image_name=image_name)
 
 @app.route("/upload_pp",methods=["POST","GET"])
 def upload_pp():
     UPLOAD_FOLDER = 'static/uploads/avatar'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     id = session['id']
-    cursor = mysql.connection.cursor()
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     now = datetime.now()
     if request.method == 'POST':
@@ -202,6 +208,7 @@ def upload_pp():
                     mysql.connection.commit()
                     session['pp'] = True
                     session['avatar'] = filename
+                    return redirect('/profile')
             cur1.close()   
             flash('File(s) successfully uploaded')    
     return redirect('param')
@@ -211,7 +218,6 @@ def modif_pp():
     UPLOAD_FOLDER = 'static/uploads/avatar'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     id = session['id']
-    cursor = mysql.connection.cursor()
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     now = datetime.now()
     if request.method == 'POST':
@@ -224,6 +230,7 @@ def modif_pp():
                     mysql.connection.commit()
                     session['pp'] = True
                     session['avatar'] = filename
+                    return redirect('/profile')
             cur1.close()   
             flash('File(s) successfully uploaded')    
     return redirect('param')

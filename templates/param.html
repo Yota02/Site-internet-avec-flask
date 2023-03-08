@@ -13,14 +13,16 @@
     </div>
     <div class="block">
         
-        {% if session['pp'] == True %}
-        <img class = "pp" src= "{{ url_for('display_image', filename=filename) }}" height="13%" width="13%">
+        {% if session['pp'] %}
+        <a href="{{ url_for('upload_avatar') }}">
+            <img class = "pp" src= "{{ url_for('static', filename='uploads/avatar/' + image_name) }}" height="13%" width="13%">
+        </a>
         {% else %}
         <a href="{{ url_for('upload_avatar') }}">
             <img class = "pp" src="static/uploads/icone_defaut.png" height="13%" width="13%">
         </a>
-
         {%endif%}
+
         <div class="marging"> 
             <br>
             <h1 class="noir-profil">

@@ -2,17 +2,19 @@
 {% block content %}
 <link rel="stylesheet" href="static/css/admin.css">
 <div class="adminbox">
-<div class = "vider"> 
-    <form method="POST" action={{url_for('vider')}}></form>
-    <label for="table"> table : </label>
-      <select name="table" id="table">
-        <option value="images">images</option>
-        <option value="avatar">avatar</option>
-    </select>
-    <button input type="submit">
-	    <span>vider</span>
-      </button>
-    </form>
+  <div class="msg">{{ msg }}</div>   
+    <div class = "vider"> 
+      <form method="POST" action={{url_for('Vider')}}>
+        <label for="table"> table : </label>
+        <select name="table" id="table">
+          <option value="images">images</option>
+          <option value="avatar">avatar</option>
+        </select>
+        <button input type="submit">
+	        <span>vider</span>
+        </button>
+      </form>
+    </div>
 </div>
 
 
