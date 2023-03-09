@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
- 
 
 <h3 class="titre-blanc">Actualiser la photo de profil</h3>
     <br>
@@ -21,13 +20,13 @@
                </p>
         <div>
     {% if session['pp'] == true%}
-    <p> modifier </p>
         <form method="post" action="/modif_pp" enctype="multipart/form-data" class="form-inline">
             <div class="form-group">
-                <label>Choose Images: </label>
+                <label>Selectionez images:</label>
                 <input type="file" name="files[]" id="fileInput" class="form-control" multiple >
             </div>
-            <input type="submit" name="submit" class="btn btn-success" value="UPLOAD"/>
+            <br>
+            <input type="submit" name="submit" class="button is-block is-info is-large is-fullwidth" value="UPLOAD"/>
         </form>
     {%else%}
     <form method="post" action="/upload_pp" enctype="multipart/form-data" class="form-inline">

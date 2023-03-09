@@ -24,3 +24,19 @@ if account:
                     session['avatar'] = filename
             cur1.close()   
             flash('File(s) successfully uploaded')
+
+
+
+/param
+id = session['id']
+    cur.execute('SELECT * FROM avatar WHERE id = %s', (id))
+    account = cur.fetchone()
+    print(account)
+    if account:
+        sql = f"SELECT * FROM avatar WHERE id = '{id}'"
+        filename = cur.execute(sql)
+        print(filename)
+        session['pp'] = True
+        redirect('/profile')
+        return render_template('param.html')
+    else:

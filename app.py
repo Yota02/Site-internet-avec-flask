@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask_mysqldb import MySQL,MySQLdb
 import MySQLdb.cursors
+import shutil
 
 app = Flask(__name__)
 
@@ -18,7 +19,6 @@ cnx = mysql.connector.connect(host = 'localhost',
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/image'
 
-
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -30,10 +30,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 mysql = MySQL(app)
 cur = cnx.cursor()
 
+dir = 'static/uploads/avatar'
 @app.before_first_request
 def clear_sessions():
     session.clear()
-    
+    for f in os.listdir(dir):
+        os.remove(os.path.join(dir, f))
+
 with app.app_context():
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
@@ -67,12 +70,14 @@ def update():
     
 @app.route("/login", methods =['GET', 'POST'])
 def login():
+    cur = cnx.cursor()
     msg = ''
     if request.method == 'POST' :
         mail = request.form['mail']
         password = request.form['password']
         cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, password))
         account = cur.fetchone() 
+        cur.close()
         if account:
             session['loggedin'] = True
             session['id'] = account[0]
@@ -93,8 +98,19 @@ def signup():
 
 @app.route("/param")
 def param():
-    return render_template('param.html')
-
+    id = session['id']
+    cur = cnx.cursor()
+    txt = f"SELECT file_name FROM avatar WHERE id = {id};"
+    cur.execute(txt)
+    result = cur.fetchall()
+    if result :
+        session['avatar'] = result[0][0]
+        cur.close()
+        return redirect('/profile')
+    else :
+        cur.close()
+        return render_template('param.html')
+    
 @app.route("/admin")
 def admin():
     return render_template('admin.html')
@@ -117,6 +133,7 @@ def logout():
 
 @app.route('/register', methods =['GET', 'POST'])
 def register():
+    cur = cnx.cursor()
     msg = ''
     if request.method == 'POST' :
         pseudo = request.form.get('pseudo')
@@ -125,16 +142,18 @@ def register():
         date = datetime.now()
         cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, mdp))
         account = cur.fetchone()
-        cur.close()
         if account:
             msg = 'Account already exists !'
         else:
-            val = mail, pseudo, mdp, date
-            sql = "INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)"
-            cur.execute(sql, val)
-            mysql.connection.commit()
-            cur.close()
+            cur.execute('INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)', (mail, pseudo, mdp, date))
+            cnx.commit()
             msg = 'You have successfully registered !'
+            session['loggedin'] = True
+            session['id'] = account[0]
+            session['mail'] = account[1]
+            session['pseudo'] = account[2]
+            session['date'] = account[4]
+            cur.close()
     else:
         if 'pseudo' in session:
             return redirect(url_for('index'))
@@ -149,7 +168,6 @@ def delete():
     mail = session['mail']
     sql = f"DELETE FROM user WHERE mail = '{mail}'"
     cur.execute(sql)
-    cur.close()
     msg = "suppréssion réussis"
     logout()
     return render_template('index.html') 
@@ -187,7 +205,6 @@ def Vider():
         cur.execute(sql, val)
         cur.execute(sql)
         mysql.connection.commit()
-        cur.close()
         msg = f"table {table} bien vidé !"
     return render_template('admin.html', msg = msg)
 
@@ -242,5 +259,3 @@ def modif_pp():
 
 if __name__=='__main__':
     app.run(debug= True)
-
-cur.close()
