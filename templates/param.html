@@ -13,9 +13,9 @@
     </div>
     <div class="block">
         
-        {% if session['pp'] == True %}
+        {% if image_name %}
         <a href="{{ url_for('upload_avatar') }}">
-            <img class = "pp" src= "{{ url_for('static', filename='uploads/avatar/' + image_name) }}" height="13%" width="13%">
+        <img class = "pp" src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar"height="13%" width="13%">
         </a>
         {% else %}
         <a href="{{ url_for('upload_avatar') }}">
@@ -23,6 +23,7 @@
         </a>
         {%endif%}
 
+        
         <div class="marging"> 
             <br>
             <h1 class="noir-profil">
@@ -51,12 +52,10 @@
                 </a> 
             </p>
            <br> 
-           
         </div>
     </div>
 
     
     
-
 {% endblock %}
 
