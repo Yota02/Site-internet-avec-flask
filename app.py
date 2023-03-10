@@ -281,7 +281,7 @@ def upload_pp():
     except Exception as e:
         logger.error(f"Error during avatar upload: {e}")
         return render_template('page_not_found.html', message=ERROR_MESSAGES['UPLOAD_ERROR'])
-    return redirect('upload')
+    return render_template('param.html', image_name = filename)
 
 
 @app.route("/modif_pp", methods=["POST", "GET"])
@@ -308,8 +308,8 @@ def modif_pp():
                     mysql.connection.commit()
                     session['pp'] = True
                     session['avatar'] = filename
-                    logger.info('Le fichier %s a ete telecharge avec succes', image_name = filename)
-                    return render_template('param.html')
+                    logger.info('Le fichier %s a ete telecharge avec succes')
+                    return render_template('param.html', image_name = filename)
             flash('File(s) successfully uploaded')
         except Exception as e:
             app.logger.error('Error uploading file(s): %s', e)
