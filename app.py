@@ -14,6 +14,12 @@ app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'# Clé secr
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 UPLOAD_FOLDER = 'static/uploads/image'
+ERROR_MESSAGES = {
+    'NOT_LOGGED_IN': 'You must be logged in to upload an avatar.',
+    'NO_FILE_SELECTED': 'Please select a file to upload.',
+    'FILE_TYPE_NOT_ALLOWED': 'File type not allowed.',
+    'UPLOAD_ERROR': 'An error occurred during upload. Please try again later.',
+}
 
 # Paramètres de configuration de la base de données MySQL
 cnx = mysql.connector.connect(host = 'localhost',
@@ -40,15 +46,17 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)# Ajoute le handler au logger
 
-
-
-dir = 'static/uploads/avatar'
-@app.before_first_request
+dir = 'static/uploads/avatar'# Définition du chemin d'accès au répertoire à vider
+@app.before_first_request # Fonction exécutée avant la première requête envoyée à l'application
 def clear_sessions():
-    session.clear()
-    for f in os.listdir(dir):
-        os.remove(os.path.join(dir, f))
-    
+    try:
+        session.clear() # Effacer toutes les variables de session enregistrées
+        for f in os.listdir(dir): # Parcourir tous les fichiers dans le répertoire spécifié
+            os.remove(os.path.join(dir, f)) # Supprimer chaque fichier dans le répertoire
+        logging.info("Cleared avatar directory") # Enregistrer un message de log indiquant que le répertoire a été vidé
+    except Exception as e:
+        logging.error(f"Error while clearing avatar directory: {e}") # Enregistrer un message de log en cas d'erreur
+ 
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -105,24 +113,21 @@ def login():
     else : 
         return render_template('login.html')
     
-@app.route("/param")
+@app.route("/param")# Définition de la route /param et de la fonction associée
 def param():
     try:
-        if 'id' not in session:# Vérification de la session
-            return redirect(url_for('login'))
+        if 'id' not in session:# Vérification si l'utilisateur est connecté
+            return redirect(url_for('login'))# Redirection vers la page de connexion si l'utilisateur n'est pas connecté
         id = session['id']# Récupération de l'identifiant de l'utilisateur
-        cur = cnx.cursor()
-        txt = f"SELECT id FROM avatar WHERE id = {id};"
+        cur = cnx.cursor()# Connexion à la base de données
+        txt = f"SELECT id FROM avatar WHERE id = {id};"# Requête SQL pour vérifier si l'avatar existe en base de données
         cur.execute(txt)
         result = cur.fetchall()
         cur.close()
-        print(result)
-        if result:# Vérification si l'avatar existe en base de données
-
-            for f in os.listdir(dir):
+        if result:# Si l'avatar existe en base de données
+            for f in os.listdir(dir):# Vidage du dossier avatar
                 os.remove(os.path.join(dir, f))
             logger.info(f"Dossier avatar Vider")
-            
             cur = cnx.cursor()# Récupération du nom de l'image de l'avatar en base de données
             txt = f"SELECT file_name FROM avatar WHERE id = {id};"
             cur.execute(txt)
@@ -132,22 +137,18 @@ def param():
             session['avatar'] = resulta[0][0]
             session['pp'] = True
             cur.close()
-            
-            cur = cnx.cursor()
+            cur = cnx.cursor()# Récupération des données de l'image de l'avatar en base de données
             txt = f"SELECT image_data, file_name FROM avatar WHERE id = {id};"
             cur.execute(txt)
             image_data, file_name = cur.fetchone()
-
             with open(os.path.join(app.root_path, 'static', 'uploads', 'avatar', file_name), 'wb') as f:# Sauvegarde de l'avatar dans le dossier des uploads
                 f.write(image_data)
-
-            logger.info(f"Session['avatar'] : {session['avatar']}")
+            logger.info(f"Session['avatar'] : {session['avatar']}")# Affichage des informations de l'avatar récupéré et sauvegardé
             logger.info(f"Avatar recupere et sauvegarde : {file_name}")
-            
             cur.close()
             return render_template('param.html', image_name=file_name)# Affichage de la page param.html avec le nom de l'image de l'avatar
         else:
-            logger.warning("Avatar non trouve en base de donnees")# Si l'avatar n'existe pas en base de données
+            logger.warning("Avatar non trouve en base de donnees")# Affichage de la page param.html si l'avatar n'existe pas en base de données
             return render_template('param.html')
     except Exception as e:# En cas d'erreur, affichage de la page d'erreur
         logger.error(f"Erreur dans la recuperation de l'avatar : {e}")
@@ -231,39 +232,19 @@ def upload():
         flash('File(s) successfully uploaded')    
     return redirect('/')
 
-@app.route("/Vider", methods =['GET', 'POST'])
-def Vider():
-    msg = ''
-    print("quelque chose")
-    if request.method == 'POST' :
-        table = request.form.get('table')
-        val = chr(table)
-        sql = "DELETE FROM '%s'"
-        cur.execute(sql, val)
-        cur.execute(sql)
-        mysql.connection.commit()
-        msg = f"table {table} bien vidé !"
-    return render_template('admin.html', msg = msg)
-
-ERROR_MESSAGES = {
-    'NOT_LOGGED_IN': 'You must be logged in to upload an avatar.',
-    'NO_FILE_SELECTED': 'Please select a file to upload.',
-    'FILE_TYPE_NOT_ALLOWED': 'File type not allowed.',
-    'UPLOAD_ERROR': 'An error occurred during upload. Please try again later.',
-}
-
 @app.route("/upload_pp", methods=["POST"])
 def upload_pp():
-    UPLOAD_FOLDER = 'static/uploads/avatar'
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     id = session.get('id')
     if not id:
+        logger.warning("Tentative d'accès à la page upload_pp sans connexion.")
         return render_template('page_not_found.html', message=ERROR_MESSAGES['NOT_LOGGED_IN'])
     try:
         file = request.files['file']
         if not file:
+            logger.warning("Aucun fichier sélectionné pour le téléversement.")
             return render_template('page_not_found.html', message=ERROR_MESSAGES['NO_FILE_SELECTED'])
         if not allowed_file(file.filename):
+            logger.warning("Le type de fichier sélectionné n'est pas autorisé.")
             return render_template('page_not_found.html', message=ERROR_MESSAGES['FILE_TYPE_NOT_ALLOWED'])
         cur = mysql.connection.cursor()
         now = datetime.now()
@@ -278,11 +259,11 @@ def upload_pp():
         session['pp'] = True
         cur.close()
         flash('File uploaded successfully')
+        logger.info(f"Fichier {filename} téléversé avec succès.")
     except Exception as e:
-        logger.error(f"Error during avatar upload: {e}")
+        logger.error(f"Erreur lors du téléversement de l'avatar : {e}")
         return render_template('page_not_found.html', message=ERROR_MESSAGES['UPLOAD_ERROR'])
     return render_template('param.html', image_name = filename)
-
 
 @app.route("/modif_pp", methods=["POST", "GET"])
 def modif_pp():
@@ -318,6 +299,20 @@ def modif_pp():
         app.logger.error('No file uploaded')
     cur1.close()
     return render_template('param.html', image_name = filename )
+
+@app.route("/Vider", methods =['GET', 'POST'])
+def Vider():
+    msg = ''
+    print("quelque chose")
+    if request.method == 'POST' :
+        table = request.form.get('table')
+        val = chr(table)
+        sql = "DELETE FROM '%s'"
+        cur.execute(sql, val)
+        cur.execute(sql)
+        mysql.connection.commit()
+        msg = f"table {table} bien vidé !"
+    return render_template('admin.html', msg = msg)
 
 if __name__=='__main__':
     app.run(debug= True)
