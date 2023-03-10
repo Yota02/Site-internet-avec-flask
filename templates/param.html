@@ -13,7 +13,7 @@
     </div>
     <div class="block">
         
-        {% if image_name %}
+        {% if session.pp %}
         <a href="{{ url_for('upload_avatar') }}">
         <img class = "pp" src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar"height="13%" width="13%">
         </a>
