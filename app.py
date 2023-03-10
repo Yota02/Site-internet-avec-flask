@@ -1,12 +1,11 @@
-from flask import request, Flask, session, render_template, flash, redirect, url_for
+from flask import abort, request, Flask, send_from_directory, session, render_template, flash, redirect, url_for, make_response
 from datetime import datetime, timedelta
 import mysql.connector
-import urllib.request
 from werkzeug.utils import secure_filename
 import os
 from flask_mysqldb import MySQL,MySQLdb
 import MySQLdb.cursors
-import shutil
+import base64
 
 app = Flask(__name__)
 
@@ -29,6 +28,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 mysql = MySQL(app)
 cur = cnx.cursor()
+image_name = 'static/uploads/avatar/icone_defaut.png'
 
 dir = 'static/uploads/avatar'
 @app.before_first_request
@@ -36,9 +36,39 @@ def clear_sessions():
     session.clear()
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
+    
 
 with app.app_context():
     cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+@app.route('/image/<filename>')
+def get_image(filename):
+    return send_from_directory(os.path.join(app.root_path, 'static', 'uploads', 'avatar'), filename)
+
+@app.route('/save-image')
+def save_image():
+    try:
+        # Connexion à la base de données
+        cur = cnx.cursor()
+
+        # Récupération des données de l'image
+        cur.execute("SELECT image_data, file_name FROM avatar WHERE id=1")
+        image_data, file_name = cur.fetchone()
+
+        # Sauvegarde de l'image dans le dossier d'uploads
+        with open(os.path.join(app.root_path, 'static', 'uploads', 'avatar', image_name), 'wb') as f:
+            f.write(image_data)
+
+        # Fermeture de la connexion à la base de données
+        cur.close()
+
+        return "L'image a été sauvegardée avec succès !"
+    except Exception as e:
+        return str(e)
+
+
+
+
 
 @app.route("/")
 def index():
@@ -103,13 +133,21 @@ def param():
     txt = f"SELECT file_name FROM avatar WHERE id = {id};"
     cur.execute(txt)
     result = cur.fetchall()
+    cur.close()
     if result :
         session['avatar'] = result[0][0]
-        cur.close()
-        return redirect('/profile')
+        cur = cnx.cursor()
+        txt = f"SELECT image_data, file_name FROM avatar WHERE id = {id};"
+        cur.execute(txt)
+        image_data, file_name = cur.fetchone()
+        with open(os.path.join(app.root_path, 'static', 'uploads', 'avatar', file_name), 'wb') as f:
+            f.write(image_data)
+        print('image bien télécharger')
+
+        return render_template('param.html', image_name=file_name)
     else :
-        cur.close()
         return render_template('param.html')
+
     
 @app.route("/admin")
 def admin():
@@ -117,8 +155,12 @@ def admin():
 
 @app.route("/avatar")
 def avatar():
-    file = os.path.join(img, session['avatar'])
-    return file
+    if 'avatar' in session:
+        file = os.path.join(dir, session['avatar'])
+        return file
+    else:
+        abort(404)
+        return file
 
 @app.route('/logout')
 def logout():
@@ -210,8 +252,12 @@ def Vider():
 
 @app.route('/profile')
 def profile():
-    image_name = os.listdir(app.config['UPLOAD_FOLDER'])[0]
-    return render_template('param.html', image_name=image_name)
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    if len(files) == 0:
+        return render_template('param.html')
+    else:
+        image_name = files[0]
+        return render_template('param.html', image_name=image_name)
 
 @app.route("/upload_pp",methods=["POST","GET"])
 def upload_pp():
@@ -225,13 +271,20 @@ def upload_pp():
             for file in files:
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    cur1.execute("INSERT INTO avatar (id, file_name, uploaded_on) VALUES (%s, %s, %s)",[id, filename, now])
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+
+                    with open(file_path, 'rb') as f:
+                        image_data = f.read()
+
+                    query = "INSERT INTO avatar (id, file_name, uploaded_on, image_data, image_type) VALUES (%s, %s, %s, %s, %s)"
+                    cur1.execute(query , (id, filename, now, image_data, file.content_type))
                     mysql.connection.commit()
                     session['pp'] = True
                     session['avatar'] = filename
                     cur1.close()
-                    return redirect('/profile')
+
+                    redirect(url_for('upload_pp'))
             flash('File(s) successfully uploaded')    
     return redirect('param')
 
