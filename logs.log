@@ -307,3 +307,70 @@
 2023-03-10 15:31:54,669 - logs - INFO - Le fichier moi_version_femme_XD.png a ete telecharge avec succes
 2023-03-10 15:31:55,325 - logs - INFO - Le fichier moi_version_femme_XD.png a ete telecharge avec succes
 2023-03-10 15:31:55,522 - logs - INFO - Le fichier moi_version_femme_XD.png a ete telecharge avec succes
+2023-03-10 16:27:02,391 - logs - INFO - Dossier avatar Vider
+2023-03-10 16:27:02,391 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-10 16:27:02,397 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-10 16:29:29,467 - logs - INFO - Dossier avatar Vider
+2023-03-10 16:29:29,469 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-10 16:29:29,469 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-10 16:29:35,802 - logs - INFO - Le fichier %s a ete telecharge avec succes
+2023-03-10 16:32:39,431 - logs - INFO - Dossier avatar Vider
+2023-03-10 16:32:39,431 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-10 16:32:39,437 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-10 16:33:01,995 - logs - INFO - Le fichier %s a ete telecharge avec succes
+2023-03-10 16:55:58,912 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 16:56:10,798 - logs - ERROR - Erreur lors du téléversement de l'avatar : 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2023-03-10 16:57:21,809 - logs - WARNING - Tentative d'accès à la page upload_pp sans connexion.
+2023-03-10 16:57:22,941 - logs - WARNING - Tentative d'accès à la page upload_pp sans connexion.
+2023-03-10 16:57:44,846 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 16:57:56,929 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 16:58:35,849 - logs - ERROR - Erreur lors du televersement de l'avatar : 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2023-03-10 17:10:28,757 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 17:10:38,555 - logs - ERROR - Erreur lors du televersement de l'avatar : 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2023-03-10 17:12:03,696 - logs - WARNING - Tentative d'accès à la page upload_pp sans connexion.
+2023-03-10 17:12:08,475 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 17:46:46,674 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 17:46:57,064 - logs - ERROR - Error during avatar upload: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2023-03-10 17:47:43,456 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 17:48:14,283 - logs - ERROR - Error during avatar upload: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2023-03-10 17:49:11,287 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 17:51:35,161 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-10 17:51:42,172 - logs - ERROR - Erreur lors du téléversement de l'avatar : 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+2023-03-11 08:47:12,559 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:53:07,360 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:57:43,511 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:57:49,160 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:57:49,163 - logs - ERROR - Erreur dans la recuperation de l'avatar : 'image_name' is undefined
+2023-03-11 08:57:53,670 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:57:53,671 - logs - ERROR - Erreur dans la recuperation de l'avatar : 'image_name' is undefined
+2023-03-11 08:57:54,694 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:57:54,694 - logs - ERROR - Erreur dans la recuperation de l'avatar : 'image_name' is undefined
+2023-03-11 08:57:58,111 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 08:57:58,112 - logs - ERROR - Erreur dans la recuperation de l'avatar : 'image_name' is undefined
+2023-03-11 09:00:59,541 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:00:59,543 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 09:00:59,544 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 09:01:14,577 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:01:14,579 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 09:01:14,580 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 09:01:18,250 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:01:18,253 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 09:01:18,254 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 09:01:31,254 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 09:02:21,262 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:02:21,265 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 09:02:21,266 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 09:02:46,325 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-11 09:25:24,354 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:25:24,357 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:25:24,358 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:25:39,304 - logs - INFO - Le fichier %s a ete telecharge avec succes
+2023-03-11 09:25:52,809 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:25:52,812 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:25:52,813 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:25:58,946 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:25:58,949 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:25:58,950 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:26:07,152 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:26:07,156 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:26:07,156 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
