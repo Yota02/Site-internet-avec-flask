@@ -4,7 +4,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="static/java/scripts.js"></script>
 
+<div class="block6">  
+  <p> Utilisateurs : </p>
+{% for user in users %}
+  <p>{{ user[0] }}</p>
+  {% if user[1] %}
+    <img src="{{ url_for('static', filename='uploads/avatar/' + user[1]) }}" alt="Avatar" height="13%" width="13%">
+  {% endif %}
+  <br>
+{% endfor %}
 
+
+</div>
 
     <div class="block5">
         <h1> discution avec : {{session.pseudo}} </h1>

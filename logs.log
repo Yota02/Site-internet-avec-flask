@@ -448,3 +448,23 @@
 2023-03-11 11:23:48,787 - logs - INFO - New message from user test has been added to the database
 2023-03-11 11:24:01,629 - logs - INFO - New message from user test has been added to the database
 2023-03-11 11:24:37,855 - logs - INFO - New message from user test has been added to the database
+2023-03-11 13:03:51,410 - logs - INFO - New message from user test has been added to the database
+2023-03-11 13:53:16,041 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 13:57:19,189 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:00:48,058 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:01:37,503 - logs - ERROR - Erreur dans la recuperation de l'avatar : Unread result found
+2023-03-11 14:01:38,674 - logs - ERROR - Erreur dans la recuperation de l'avatar : Unread result found
+2023-03-11 14:02:26,047 - logs - ERROR - Erreur dans la recuperation de l'avatar : Unread result found
+2023-03-11 14:09:05,669 - logs - INFO - {'id': 8, 'mail': 'amichauxkinet@gmail.com', 'pseudo': 'test', 'password': '$2b$12$MWWMFqDgEDXsKFTLD763N.a9OEeVGlbA3kNfUm4nuIGyXvDVeSeYy', 'date': '2023-03-10 16:49:29.110616'}
+2023-03-11 14:09:46,054 - logs - INFO - {'id': 8, 'mail': 'amichauxkinet@gmail.com', 'pseudo': 'test', 'password': '$2b$12$MWWMFqDgEDXsKFTLD763N.a9OEeVGlbA3kNfUm4nuIGyXvDVeSeYy', 'date': '2023-03-10 16:49:29.110616'}
+2023-03-11 14:10:35,064 - logs - INFO - (8, 'amichauxkinet@gmail.com', 'test', '$2b$12$MWWMFqDgEDXsKFTLD763N.a9OEeVGlbA3kNfUm4nuIGyXvDVeSeYy', '2023-03-10 16:49:29.110616')
+2023-03-11 14:10:35,065 - logs - INFO - $2b$12$MWWMFqDgEDXsKFTLD763N.a9OEeVGlbA3kNfUm4nuIGyXvDVeSeYy
+2023-03-11 14:17:34,620 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:20:59,117 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:20:59,783 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:21:14,631 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:21:48,409 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:21:53,491 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:24:38,882 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 14:27:55,455 - logs - INFO - Chat function called with status='None', users='('test', 'moi_version_femme_XD.png')', image_name='None'
+2023-03-11 14:27:59,066 - logs - INFO - Chat function called with status='None', users='('test', 'moi_version_femme_XD.png')', image_name='None'

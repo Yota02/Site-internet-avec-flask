@@ -15,7 +15,6 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 bcrypt = Bcrypt(app)
 
-
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'# Cle secrète utilisee pour les sessions utilisateur
 
 MAX_FILE_SIZE = 10 * 1024 * 1024 # 10 Mo en octets
@@ -63,7 +62,9 @@ def clear_sessions():
         logging.info("Cleared avatar directory") # Enregistrer un message de log indiquant que le repertoire a ete vide
     except Exception as e:
         logging.error(f"Error while clearing avatar directory: {e}") # Enregistrer un message de log en cas d'erreur
- 
+
+
+# Route vers page :
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -71,6 +72,18 @@ def index():
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    status = request.args.get('status')
+    cur = cnx.cursor()
+    cur.execute('SELECT user.pseudo, avatar.file_name FROM user INNER JOIN avatar WHERE user.id = avatar.id')
+    res = cur.fetchall()
+    users = res[0]
+    file_name = res[1]
+    cur.close()
+    logger.info(f"Chat function called with status='{status}', users='{users}', image_name='{file_name}'")# Enregistrer un message de journalisation avec les informations de l'utilisateur et de l'avatar
+    return render_template('chat.html', status=status,  users=users, image_name=file_name)
 
 @app.route("/uploadimage")
 def uploadimage():
@@ -108,7 +121,7 @@ def login():
         account = cur.fetchone()
         cur.close()
         if account:
-            hashed_password = account[3]
+            hashed_password = account[3] 
             if bcrypt.check_password_hash(hashed_password, password):
                 session['loggedin'] = True
                 session['id'] = account[0]
@@ -174,6 +187,8 @@ def logout():
     session.pop('avatar', None)
     session.pop('pp', None)
     return redirect(url_for('index'))
+
+# action : 
 
 @app.route('/register', methods =['GET', 'POST'])
 def register():
@@ -314,18 +329,13 @@ def Vider():
         msg = f"table {table} bien vide !"
     return render_template('admin.html', msg = msg)
 
-@app.route('/messages1', methods=['GET', 'POST'])
-def messages1():
-    status = request.args.get('status')
-    return render_template('chat.html', status=status)
-
 @app.route('/messages', methods=['GET', 'POST'])
 def messages():
     if request.method == 'POST':
         username = session['pseudo']# Récupérer le nom d'utilisateur de la session et le message soumis dans le formulaire
         message = request.form['message']
-        cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)# Insérer le message dans la base de données
-        cur1.execute('INSERT INTO messages (pseudo, message) VALUES (%s, %s)', (username, message))
+        cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur1.execute('INSERT INTO messages (pseudo, message) VALUES (%s, %s)', (username, message))# Insérer le message dans la base de données
         mysql.connection.commit()
         cur1.close()
         logger.info(f"New message from user {username} has been added to the database")# Enregistrer un message de log indiquant que le nouveau message a été ajouté à la base de données
@@ -335,10 +345,10 @@ def messages():
         cur1.execute('SELECT pseudo, message, timestamp FROM messages ORDER BY id DESC LIMIT 10')# Récupérer les 10 derniers messages de la base de données
         results = cur.fetchall()
         messages = []
-        for row in results:# Ajouter chaque message dans une liste
-            messages.append({'username': row[0], 'message': row[1], 'timestamp': row[2]})
-        cur1.close()# Enregistrer un message de log indiquant que les messages ont été récupérés de la base de données
-        logger.info(f"Retrieved {len(messages)} messages from the database")
+        for row in results:
+            messages.append({'username': row[0], 'message': row[1], 'timestamp': row[2]})# Ajouter chaque message dans une liste
+        cur1.close()
+        logger.info(f"Retrieved {len(messages)} messages from the database")# Enregistrer un message de log indiquant que les messages ont été récupérés de la base de données
         return jsonify(messages)# Renvoyer les messages au format JSON
 
 

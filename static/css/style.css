@@ -57,6 +57,33 @@
     border-radius: 10px;
   }
 
+  .block6 {
+    float:center;
+    position:absolute;
+    background: white;
+    width: 20%;
+    margin-right:1%;
+    min-width: 20%;
+    height: 86%;
+    top: 12%;
+    left: 0%;
+    text-align: center;
+    overflow:hidden;
+    border:solid 2px #00a4cd; 
+    color: black; 
+    border-radius: 10px;
+  }
+
+
+
+
+
+
+
+
+
+
+
 .bonton{
     color: blue;
 
