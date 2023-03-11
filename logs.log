@@ -468,3 +468,4 @@
 2023-03-11 14:24:38,882 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
 2023-03-11 14:27:55,455 - logs - INFO - Chat function called with status='None', users='('test', 'moi_version_femme_XD.png')', image_name='None'
 2023-03-11 14:27:59,066 - logs - INFO - Chat function called with status='None', users='('test', 'moi_version_femme_XD.png')', image_name='None'
+2023-03-11 14:29:09,115 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
