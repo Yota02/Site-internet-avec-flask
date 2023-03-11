@@ -4,18 +4,28 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="static/java/scripts.js"></script>
 
-    <p>{{session.pseudo}} :</p>
-    {% if status %}
-    <p>{{ status }}</p>
+
+
+    <div class="block5">
+        <h1> discution avec : {{session.pseudo}} </h1>
+    
+    {% if messages %}
+    <p>{{session.pseudo}} : {{message}}</p>
+    <ul>
+		{% for message in message %}
+      <li>{{ message.username }} - {{ message.timestamp }}: {{ message.message }}</li>
+      {% endfor %}
+	</ul>
     {% else %}
     <br>
     {%endif%}
 
-    <div id="chatbox">
+    <div id="chatbox" >
     <form id="message-form" method="POST" action= {{url_for('messages')}}>
       <input type="text" name="message" id="message" placeholder="Enter your message...">
       <button type="submit">Send</button>
     </form>
+</div>
 </div>
 
 {% endblock %}

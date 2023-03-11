@@ -322,24 +322,25 @@ def messages1():
 @app.route('/messages', methods=['GET', 'POST'])
 def messages():
     if request.method == 'POST':
-        username = session['pseudo']
+        username = session['pseudo']# Récupérer le nom d'utilisateur de la session et le message soumis dans le formulaire
         message = request.form['message']
-        cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)# Insérer le message dans la base de données
         cur1.execute('INSERT INTO messages (pseudo, message) VALUES (%s, %s)', (username, message))
         mysql.connection.commit()
         cur1.close()
-        logger.info(f"New message from user {username} has been added to the database")
-        return redirect(url_for('messages1', status=message))
+        logger.info(f"New message from user {username} has been added to the database")# Enregistrer un message de log indiquant que le nouveau message a été ajouté à la base de données
+        return redirect(url_for('messages1', messages=message))# Rediriger l'utilisateur vers la page de messages avec un message de statut
     else:
         cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cur1.execute('SELECT pseudo, message, timestamp FROM messages ORDER BY id DESC LIMIT 10')
+        cur1.execute('SELECT pseudo, message, timestamp FROM messages ORDER BY id DESC LIMIT 10')# Récupérer les 10 derniers messages de la base de données
         results = cur.fetchall()
         messages = []
-        for row in results:
+        for row in results:# Ajouter chaque message dans une liste
             messages.append({'username': row[0], 'message': row[1], 'timestamp': row[2]})
-        cur1.close()
+        cur1.close()# Enregistrer un message de log indiquant que les messages ont été récupérés de la base de données
         logger.info(f"Retrieved {len(messages)} messages from the database")
-        return jsonify(messages)
+        return jsonify(messages)# Renvoyer les messages au format JSON
+
 
 
 
