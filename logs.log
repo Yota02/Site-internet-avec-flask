@@ -426,3 +426,4 @@
 2023-03-11 10:47:39,905 - logs - INFO - Dossier avatar Vider
 2023-03-11 10:47:39,907 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
 2023-03-11 10:47:39,907 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:56:29,190 - logs - INFO - New message from user test has been added to the database
