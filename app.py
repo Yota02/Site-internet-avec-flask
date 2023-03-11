@@ -316,28 +316,8 @@ def Vider():
 
 @app.route('/messages1', methods=['GET', 'POST'])
 def messages1():
-    return render_template('chat.html')
-
-@app.route('/message', methods=['POST'])
-def add_message():
-    message = request.json['message']
-    username = request.json['username']
-    cursor = mysql.connection.cursor()
-    cursor.execute('INSERT INTO messages (pseudo, message) VALUES (%s, %s)', (username, message))
-    mysql.connection.commit()
-    cursor.close()
-    emit('message', {'username': username, 'message': message}, broadcast=True)
-    return jsonify(success=True)
-
-@socketio.on('connect')
-def connect():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM messages')
-    messages = cursor.fetchall()
-    cursor.close()
-    for message in messages:
-        emit('message', {'username': message[1], 'message': message[2]})
-
+    status = request.args.get('status')
+    return render_template('chat.html', status=status)
 
 @app.route('/messages', methods=['GET', 'POST'])
 def messages():
@@ -349,7 +329,7 @@ def messages():
         mysql.connection.commit()
         cur1.close()
         logger.info(f"New message from user {username} has been added to the database")
-        return jsonify({'status': 'OK'})
+        return redirect(url_for('messages1', status=message))
     else:
         cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur1.execute('SELECT pseudo, message, timestamp FROM messages ORDER BY id DESC LIMIT 10')

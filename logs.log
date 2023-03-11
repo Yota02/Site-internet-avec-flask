@@ -427,3 +427,8 @@
 2023-03-11 10:47:39,907 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
 2023-03-11 10:47:39,907 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
 2023-03-11 10:56:29,190 - logs - INFO - New message from user test has been added to the database
+2023-03-11 10:59:04,515 - logs - INFO - New message from user test has been added to the database
+2023-03-11 11:01:00,569 - logs - INFO - New message from user test has been added to the database
+2023-03-11 11:04:32,531 - logs - INFO - New message from user test has been added to the database
+2023-03-11 11:06:20,506 - logs - INFO - New message from user test has been added to the database
+2023-03-11 11:06:58,958 - logs - INFO - New message from user test has been added to the database
