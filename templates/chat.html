@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+	
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="static/java/scripts.js"></script>
+
+    <h1>Welcome to the Chat App!</h1>
+    <div id="chatbox">
+    <form id="message-form" method="POST" action= {{url_for('messages')}}>
+      <input type="text" name="message" id="message" placeholder="Enter your message...">
+      <button type="submit">Send</button>
+    </form>
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+

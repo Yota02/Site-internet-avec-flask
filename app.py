@@ -1,4 +1,4 @@
-from flask import request, Flask, session, render_template, flash, redirect, url_for
+from flask import request, Flask, session, render_template, flash, redirect, url_for, jsonify
 from datetime import datetime
 import mysql.connector
 from werkzeug.utils import secure_filename
@@ -7,9 +7,14 @@ from flask_mysqldb import MySQL,MySQLdb
 import MySQLdb.cursors
 import logging
 from flask_bcrypt import Bcrypt
+from flask_socketio import SocketIO, emit
+import json
+
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 bcrypt = Bcrypt(app)
+
 
 app.secret_key = '74$mo7iokz&qmhfgg35r+641a(vqw4pkfdp7bl4ogqimv2*9pj'# Cle secrète utilisee pour les sessions utilisateur
 
@@ -131,13 +136,11 @@ def param():
         if result:# Si l'avatar existe en base de donnees
             for f in os.listdir(dir):# Vidage du dossier avatar
                 os.remove(os.path.join(dir, f))
-            logger.info(f"Dossier avatar Vider")
             cur = cnx.cursor()# Recuperation du nom de l'image de l'avatar en base de donnees
             txt = f"SELECT file_name FROM avatar WHERE id = {id};"
             cur.execute(txt)
             resulta = cur.fetchall()
             session.pop('avatar', None)
-            print(resulta)
             session['avatar'] = resulta[0][0]
             session['pp'] = True
             cur.close()
@@ -147,7 +150,6 @@ def param():
             image_data, file_name = cur.fetchone()
             with open(os.path.join(app.root_path, 'static', 'uploads', 'avatar', file_name), 'wb') as f:# Sauvegarde de l'avatar dans le dossier des uploads
                 f.write(image_data)
-            logger.info(f"Session['avatar'] : {session['avatar']}")# Affichage des informations de l'avatar recupere et sauvegarde
             logger.info(f"Avatar recupere et sauvegarde : {file_name}")
             cur.close()
             return render_template('param.html', image_name=file_name)# Affichage de la page param.html avec le nom de l'image de l'avatar
@@ -312,8 +314,52 @@ def Vider():
         msg = f"table {table} bien vide !"
     return render_template('admin.html', msg = msg)
 
+@app.route('/messages1', methods=['GET', 'POST'])
+def messages1():
+    return render_template('chat.html')
+
+@app.route('/message', methods=['POST'])
+def add_message():
+    message = request.json['message']
+    username = request.json['username']
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO messages (pseudo, message) VALUES (%s, %s)', (username, message))
+    mysql.connection.commit()
+    cursor.close()
+    emit('message', {'username': username, 'message': message}, broadcast=True)
+    return jsonify(success=True)
+
+@socketio.on('connect')
+def connect():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM messages')
+    messages = cursor.fetchall()
+    cursor.close()
+    for message in messages:
+        emit('message', {'username': message[1], 'message': message[2]})
 
 
+@app.route('/messages', methods=['GET', 'POST'])
+def messages():
+    if request.method == 'POST':
+        username = session['pseudo']
+        message = request.form['message']
+        cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur1.execute('INSERT INTO messages (pseudo, message) VALUES (%s, %s)', (username, message))
+        mysql.connection.commit()
+        cur1.close()
+        logger.info(f"New message from user {username} has been added to the database")
+        return jsonify({'status': 'OK'})
+    else:
+        cur1 = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur1.execute('SELECT pseudo, message, timestamp FROM messages ORDER BY id DESC LIMIT 10')
+        results = cur.fetchall()
+        messages = []
+        for row in results:
+            messages.append({'username': row[0], 'message': row[1], 'timestamp': row[2]})
+        cur1.close()
+        logger.info(f"Retrieved {len(messages)} messages from the database")
+        return jsonify(messages)
 
 
 
@@ -327,3 +373,4 @@ def page_not_found(error):
 
 if __name__=='__main__':
     app.run(debug= True)
+    socketio.run(app, debug=True)

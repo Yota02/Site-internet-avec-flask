@@ -374,3 +374,55 @@
 2023-03-11 09:26:07,152 - logs - INFO - Dossier avatar Vider
 2023-03-11 09:26:07,156 - logs - INFO - Session['avatar'] : ae49b5c108bb756e4184642a9a20a60d.jpg
 2023-03-11 09:26:07,156 - logs - INFO - Avatar recupere et sauvegarde : ae49b5c108bb756e4184642a9a20a60d.jpg
+2023-03-11 09:40:48,517 - logs - INFO - Dossier avatar Vider
+2023-03-11 09:40:48,520 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 09:40:48,521 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:25:35,658 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:25:35,662 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 10:25:35,663 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:25:43,829 - logs - INFO - Le fichier %s a ete telecharge avec succes
+2023-03-11 10:25:45,610 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:25:45,613 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 10:25:45,613 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:25:47,091 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:25:47,095 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 10:25:47,096 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:25:47,714 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:25:47,717 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 10:25:47,718 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:25:47,885 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:25:47,888 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 10:25:47,888 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:25:49,710 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:25:49,713 - logs - INFO - Session['avatar'] : 1377975.png
+2023-03-11 10:25:49,713 - logs - INFO - Avatar recupere et sauvegarde : 1377975.png
+2023-03-11 10:34:16,861 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:34:16,865 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:34:16,866 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:34:26,955 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:34:26,958 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:34:26,959 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:34:34,228 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:34:34,231 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:34:34,232 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:34:34,809 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:34:34,814 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:34:34,814 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:34:34,983 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:34:34,986 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:34:34,987 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:35:46,496 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:35:46,500 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:35:46,501 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:43:25,001 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:43:25,005 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:43:25,005 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:46:25,889 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:46:25,892 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:46:25,892 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:47:07,021 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:47:07,024 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:47:07,025 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-11 10:47:39,905 - logs - INFO - Dossier avatar Vider
+2023-03-11 10:47:39,907 - logs - INFO - Session['avatar'] : moi_version_femme_XD.png
+2023-03-11 10:47:39,907 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png

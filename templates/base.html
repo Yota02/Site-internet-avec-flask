@@ -35,6 +35,9 @@
                             <a href="{{ url_for('uploadimage') }}" class="navbar-item">
                                 Upload image
                             </a>
+                            <a href="{{ url_for('messages1') }}" class="navbar-item">
+                                chat
+                            </a>
                             {% if session['pseudo'] %}
                             {% else%}
                             <a href="{{ url_for('login') }}" class="navbar-item">
