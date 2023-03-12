@@ -864,3 +864,25 @@
 2023-03-12 10:17:32,295 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
 2023-03-12 10:17:36,778 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
 2023-03-12 10:19:32,886 - logs - INFO - Avatar recupere et sauvegarde : moi_version_femme_XD.png
+2023-03-12 10:20:30,239 - logs - INFO - Chat function called with status='None', users='('Yota002',)', image_name='moi_version_femme_XD.png'
+2023-03-12 10:20:33,473 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:20:40,781 - logs - INFO - Chat function called with status='None', users='('Yota002',)', image_name='moi_version_femme_XD.png'
+2023-03-12 10:20:42,021 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:22:53,959 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:23:02,241 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:23:09,405 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:23:12,675 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:23:15,538 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:23:15,928 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:24:09,015 - logs - INFO - Chat function called with status='None', users='('Yota002',)', image_name='moi_version_femme_XD.png'
+2023-03-12 10:24:09,759 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:24:10,864 - logs - INFO - Chat function called with status='None', users='('Yota002',)', image_name='moi_version_femme_XD.png'
+2023-03-12 10:24:11,522 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:24:57,353 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:25:05,991 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:25:37,436 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:26:09,358 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:26:12,727 - logs - WARNING - Avatar non trouve en base de donnees
+2023-03-12 10:35:41,477 - logs - INFO - Chat function called with status='None', users='('Yota002',)', image_name='moi_version_femme_XD.png'
+2023-03-12 10:37:51,067 - logs - INFO - Chat function called with status='None', users='('Yota002',)', image_name='moi_version_femme_XD.png'
+2023-03-12 10:37:53,004 - logs - WARNING - Avatar non trouve en base de donnees
