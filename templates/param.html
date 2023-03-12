@@ -13,13 +13,13 @@
     </div>
     <div class="block">
         
-        {% if session.pp %}
-        <a href="{{ url_for('upload_avatar') }}">
-        <img class = "pp" src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar"height="13%" width="13%">
+        {% if image_name %}
+        <a href="{{ url_for('upload_avatar') }}" >
+        <img class = "pp" src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar" height="13%" width="13%">
         </a>
         {% else %}
         <a href="{{ url_for('upload_avatar') }}">
-            <img class = "pp" src="static/uploads/icone_defaut.png" height="13%" width="13%">
+            <img class = "pp" src="static/uploads/icone_defaut.png" alt="Avatar" height="13%" width="13%">
         </a>
         {%endif%}
 
@@ -38,23 +38,27 @@
            </h1>
            
            <br>
-           <p class="logout "> 
-            <a href="{{ url_for('logout') }}" >
-                Se déconnecter
-            </a> </p>
-            <p class="update "> 
-                <a href="{{ url_for('update') }}" >
-                Actualisé
-            </a> </p>
-            <p class="delet "> 
-                <a href="{{ url_for('delete') }}" >
-                    Supprimé
-                </a> 
-            </p>
+           <div class="container">
+            <div class="logout">
+                <p>
+                    <a href="{{ url_for('logout') }}">Se déconnecter</a>
+                </p>
+            </div>
+            <div class="update">
+                <p>
+                    <a href="{{ url_for('update') }}">Actualiser</a>
+                </p>
+            </div>
+            <div class="delet">
+                <p>
+                    <a href="{{ url_for('delete') }}">Supprimer</a>
+                </p>
+            </div>
+        </div>
            <br> 
         </div>
     </div>
-
+</div>
     
     
 {% endblock %}

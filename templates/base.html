@@ -7,11 +7,11 @@
 	<meta name="Author" content="Alexis Michaux-Kinet">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask Auth Example</title>
+    <title>Flask Yota002</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
     <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="static/css/cssslide.css">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300i,400" rel="stylesheet">
+    <link href="static/css/langue.css" rel="stylesheet">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src='static/java/scripts.js' async></script>
@@ -32,18 +32,19 @@
                             <a href="{{ url_for('index') }}" class="navbar-item">
                                 Accueil
                             </a>
+                            {% if session['pseudo'] %}
                             <a href="{{ url_for('uploadimage') }}" class="navbar-item">
                                 Upload image
                             </a>
                             <a href="{{ url_for('chat') }}" class="navbar-item">
                                 chat
                             </a>
-                            {% if session['pseudo'] %}
                             {% else%}
                             <a href="{{ url_for('login') }}" class="navbar-item">
                                 Se connecter
                             </a>
                             {%endif%}
+
                             {% if session['pseudo'] %}
                             <a href="{{ url_for('param') }}" >
                                 <img 

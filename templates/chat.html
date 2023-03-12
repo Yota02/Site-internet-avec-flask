@@ -6,11 +6,15 @@
 
 <div class="block6">  
   <p> Utilisateurs : </p>
-{% for user in users %}
-  <p>{{ user[0] }}</p>
-  {% if user[1] %}
-    <img src="{{ url_for('static', filename='uploads/avatar/' + user[1]) }}" alt="Avatar" height="13%" width="13%">
-  {% endif %}
+  {% for user in users %}
+  <a href="{{url_for('choixdecompte')}}">  
+  <div class ="util">
+    {% if image_name %}
+      <img src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar" height="13%" width="13%" >
+    {% endif %}
+    <p>{{ user }}#{{session.id}}</p>
+  </div>
+</a>
   <br>
 {% endfor %}
 

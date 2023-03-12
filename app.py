@@ -75,15 +75,17 @@ def signup():
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
-    status = request.args.get('status')
-    cur = cnx.cursor()
-    cur.execute('SELECT user.pseudo, avatar.file_name FROM user INNER JOIN avatar WHERE user.id = avatar.id')
-    res = cur.fetchall()
-    users = res[0]
-    file_name = res[1]
-    cur.close()
+    status = request.args.get('status')# Récupérer le statut de la requête
+    cur = cnx.cursor()# Créer un curseur pour exécuter des requêtes SQL
+    cur.execute('SELECT pseudo FROM user')# Exécuter une requête pour récupérer les pseudos des utilisateurs
+    users_res = cur.fetchall()  # Récupérer tous les résultats de la requête
+    users = users_res[0] # Récupérer le premier pseudo de la première ligne des résultats
+    cur.execute('SELECT file_name FROM avatar')# Exécuter une requête pour récupérer le nom du fichier d'avatar
+    file_res = cur.fetchall()# Récupérer tous les résultats de la requête
+    file_name = file_res[0][0] # Récupérer le nom du fichier de la première ligne des résultats
+    cur.close()# Fermer le curseur
     logger.info(f"Chat function called with status='{status}', users='{users}', image_name='{file_name}'")# Enregistrer un message de journalisation avec les informations de l'utilisateur et de l'avatar
-    return render_template('chat.html', status=status,  users=users, image_name=file_name)
+    return render_template('chat.html', status=status, users=users, image_name=file_name)# Renvoyer le modèle HTML avec les informations de l'utilisateur et de l'avatar
 
 @app.route("/uploadimage")
 def uploadimage():
@@ -96,6 +98,7 @@ def upload_avatar():
 @app.route('/update', methods =['GET', 'POST'])
 def update():
     if request.method == 'POST' :
+        cur = cnx.cursor()
         mail = session['mail']
         pseudo = request.form.get('pseudo')
         mdp = request.form.get('password')
@@ -104,8 +107,10 @@ def update():
         val = mail2, pseudo, hashed_password, mail
         sql = "UPDATE user SET mail = %s, pseudo = %s, password = %s WHERE mail = %s"
         cur.execute(sql, val)
-        mysql.connection.commit()
+        cnx.commit()
         cur.close()
+        session['mail'] = mail2
+        session['pseudo'] = pseudo
         return render_template('index.html')
     else :
         return render_template('update.html')
@@ -351,8 +356,11 @@ def messages():
         logger.info(f"Retrieved {len(messages)} messages from the database")# Enregistrer un message de log indiquant que les messages ont été récupérés de la base de données
         return jsonify(messages)# Renvoyer les messages au format JSON
 
-
-
+@app.route('/choixdecompte', methods=['GET', 'POST'])
+def choixdecompte():
+    if request.method == 'POST' :
+        session['chat'] = request.form.get('user')
+    return render_template('chat.html', userdis = session['chat'])
 
 
 #erreur : 
