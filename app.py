@@ -117,66 +117,77 @@ def update():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    cur = cnx.cursor()
     msg = ''
-    if request.method == 'POST':
-        mail = request.form['mail']
-        password = request.form['password']
-        cur.execute("SELECT * FROM user WHERE mail = %(mail)s", {"mail": mail})
-        account = cur.fetchone()
-        cur.close()
-        if account:
-            hashed_password = account[3] 
-            if bcrypt.check_password_hash(hashed_password, password):
-                session['loggedin'] = True
-                session['id'] = account[0]
-                session['mail'] = account[1]
-                session['pseudo'] = account[2]
-                session['date'] = account[4]
-                msg = 'Logged in successfully!'
-                return render_template('index.html', msg=msg)
-        msg = 'Incorrect email or password!'
-        return render_template('login.html', msg=msg)
+    if request.method == 'POST': # Si une requête POST est envoyée
+        try:
+            mail = request.form['mail']
+            password = request.form['password']
+            with cnx.cursor() as cur: # Requête pour récupérer le compte utilisateur associé à l'adresse e-mail fournie
+                cur.execute("SELECT * FROM user WHERE mail = %s", (mail,))
+                account = cur.fetchone()
+            if account: # Si un compte utilisateur est trouvé
+                hashed_password = account[3] 
+                # Vérifier si le mot de passe fourni correspond au mot de passe haché stocké dans la base de données
+                if bcrypt.checkpw(password.encode('utf8'), hashed_password.encode('utf8')):# Si le mot de passe est correct, connecter l'utilisateur en créant une session
+                    session.permanent = True
+                    session['loggedin'] = True
+                    session['id'] = account[0]
+                    session['mail'] = account[1]
+                    session['pseudo'] = account[2]
+                    session['date'] = account[4]
+                    msg = 'Connecté avec succès !'
+                    return render_template('index.html', msg=msg)
+            msg = 'Adresse e-mail ou mot de passe incorrect !' # Si l'adresse e-mail ou le mot de passe est incorrect
+            return render_template('login.html', msg=msg)
+        except Exception as e:# En cas d'erreur lors de la connexion à la base de données
+            app.logger.error(e)
+            msg = 'Une erreur est survenue. Veuillez réessayer ultérieurement.'
+            return render_template('login.html', msg=msg)
     else:
-        return render_template('login.html')
+        return render_template('login.html') # Afficher la page de connexion
 
-@app.route("/param")# Definition de la route /param et de la fonction associee
+
+@app.route("/param")
 def param():
     try:
-        if 'id' not in session:# Verification si l'utilisateur est connecte
-            return redirect(url_for('login'))# Redirection vers la page de connexion si l'utilisateur n'est pas connecte
-        id = session['id']# Recuperation de l'identifiant de l'utilisateur
-        cur = cnx.cursor()# Connexion à la base de donnees
-        txt = f"SELECT id FROM avatar WHERE id = {id};"# Requête SQL pour verifier si l'avatar existe en base de donnees
-        cur.execute(txt)
-        result = cur.fetchall()
-        cur.close()
-        if result:# Si l'avatar existe en base de donnees
-            for f in os.listdir(dir):# Vidage du dossier avatar
-                os.remove(os.path.join(dir, f))
-            cur = cnx.cursor()# Recuperation du nom de l'image de l'avatar en base de donnees
-            txt = f"SELECT file_name FROM avatar WHERE id = {id};"
-            cur.execute(txt)
-            resulta = cur.fetchall()
-            session.pop('avatar', None)
-            session['avatar'] = resulta[0][0]
-            session['pp'] = True
-            cur.close()
-            cur = cnx.cursor()# Recuperation des donnees de l'image de l'avatar en base de donnees
-            txt = f"SELECT image_data, file_name FROM avatar WHERE id = {id};"
-            cur.execute(txt)
-            image_data, file_name = cur.fetchone()
-            with open(os.path.join(app.root_path, 'static', 'uploads', 'avatar', file_name), 'wb') as f:# Sauvegarde de l'avatar dans le dossier des uploads
+        if 'id' not in session:# Vérifier si l'utilisateur est connecté
+            return redirect(url_for('login'))        
+        user_id = session['id']# Récupérer l'identifiant de l'utilisateur
+        cursor = cnx.cursor()# Vérifier si l'avatar existe en base de données
+        query = f"SELECT id FROM avatar WHERE id = {user_id};"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+        if result:
+            avatar_dir = os.path.join(app.root_path, 'static', 'uploads', 'avatar')# Supprimer les anciens avatars
+            for filename in os.listdir(avatar_dir):
+                file_path = os.path.join(avatar_dir, filename)
+                os.remove(file_path)
+            cursor = cnx.cursor()# Récupérer le nom de l'image de l'avatar et les données de l'image
+            query = f"SELECT image_data, file_name FROM avatar WHERE id = {user_id};"
+            cursor.execute(query)
+            image_data, file_name = cursor.fetchone()
+            cursor.close()
+            file_path = os.path.join(avatar_dir, file_name)# Enregistrer l'image dans le dossier des uploads
+            with open(file_path, 'wb') as f:
                 f.write(image_data)
-            logger.info(f"Avatar recupere et sauvegarde : {file_name}")
-            cur.close()
-            return render_template('param.html', image_name=file_name)# Affichage de la page param.html avec le nom de l'image de l'avatar
+            session.pop('avatar', None)# Enregistrer le nom de l'image de l'avatar dans la session
+            session['avatar'] = file_name
+            session['pp'] = True
+            return render_template('param.html', image_name=file_name)# Afficher la page param.html avec le nom de l'image de l'avatar
         else:
-            logger.warning("Avatar non trouve en base de donnees")# Affichage de la page param.html si l'avatar n'existe pas en base de donnees
+            logger.warning("Avatar non trouvé en base de données")# Afficher la page param.html si l'avatar n'existe pas en base de données
             return render_template('param.html')
-    except Exception as e:# En cas d'erreur, affichage de la page d'erreur
-        logger.error(f"Erreur dans la recuperation de l'avatar : {e}")
+    except mysql.connector.Error as err:
+        logger.error(f"Erreur MySQL : {err}")# Afficher un message d'erreur si la requête SQL échoue
         return redirect('errorhandler')
+    except IOError as err:
+        logger.error(f"Erreur d'entrée/sortie : {err}")# Afficher un message d'erreur si l'enregistrement de l'image échoue
+        return redirect('errorhandler')
+    except Exception as e:
+        logger.error(f"Erreur inattendue : {e}")# Afficher un message d'erreur générique en cas d'erreur
+        return redirect('errorhandler')
+
 
 @app.route("/admin")
 def admin():
@@ -184,45 +195,58 @@ def admin():
 
 @app.route('/logout')
 def logout():
-    session.pop('loggedin', None)
-    session.pop('mail', None)
-    session.pop('id', None)
-    session.pop('pseudo', None)
-    session.pop('date', None)
-    session.pop('avatar', None)
-    session.pop('pp', None)
-    return redirect(url_for('index'))
+    utilisateur = session['mail'] # Récupération du pseudo de l'utilisateur
+    if 'loggedin' in session: # Vérification si l'utilisateur est connecté
+        session.pop('loggedin', None) # Suppression de la clé 'loggedin' de la session
+        session.pop('mail', None) # Suppression de la clé 'mail' de la session
+        session.pop('id', None) # Suppression de la clé 'id' de la session
+        session.pop('pseudo', None) # Suppression de la clé 'pseudo' de la session
+        session.pop('date', None) # Suppression de la clé 'date' de la session
+        session.pop('avatar', None) # Suppression de la clé 'avatar' de la session
+        session.pop('pp', None) # Suppression de la clé 'pp' de la session
+        flash('Vous êtes déconnecté.', 'success') # Affichage d'un message de confirmation de déconnexion
+        logging.info('Utilisateur', {{utilisateur}}, 'déconnecté') # Enregistrement d'un message de log indiquant la déconnexion de l'utilisateur
+    return redirect(url_for('index')) # Redirection vers la page d'accueil de l'application
+
 
 # action : 
 
-@app.route('/register', methods =['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST']) 
 def register():
-    cur = cnx.cursor()
-    msg = ''
-    if request.method == 'POST' :
-        pseudo = request.form.get('pseudo')
-        mdp = request.form.get('password')
-        mail = request.form.get('mail')
-        date = datetime.now()
-        cur.execute('SELECT * FROM user WHERE mail = %s AND password = %s', (mail, mdp))
-        account = cur.fetchone()
-        hashed_password = bcrypt.generate_password_hash(mdp).decode('utf-8')
-        if account:
-            msg = 'Account already exists !'
-            session['loggedin'] = True
-            session['id'] = account[0]
-            session['mail'] = account[1]
-            session['pseudo'] = account[2]
-            session['date'] = account[4]
-        else:
-            cur.execute('INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)', (mail, pseudo, hashed_password, date))
-            cnx.commit()
-            msg = 'You have successfully registered !'
-            cur.close()
-    else:
-        if 'pseudo' in session:
-            return redirect(url_for('index'))
-    return render_template('index.html', msg = msg)
+    if request.method == 'POST':  # Si la méthode est POST
+        pseudo = request.form.get('pseudo')  # Récupérer le pseudo de la requête
+        mdp = request.form.get('password')  # Récupérer le mot de passe de la requête
+        mail = request.form.get('mail')  # Récupérer le mail de la requête
+        date = datetime.now()  # Récupérer la date actuelle
+        cur = cnx.cursor()  # Créer un curseur pour exécuter des requêtes sur la base de données
+        try:
+            cur.execute('SELECT * FROM user WHERE mail = %s', (mail,))  # Vérifier si le compte existe déjà
+            account = cur.fetchone()  # Récupérer les informations de l'utilisateur
+            if account:  # Si le compte existe déjà
+                msg = 'Ce compte existe déjà !'
+                session['loggedin'] = True
+                session['id'] = account[0]
+                session['mail'] = account[1]
+                session['pseudo'] = account[2]
+                session['date'] = account[4]
+                logging.info('Utilisateur connecté avec succès : %s', account[2])  # Enregistrer l'information dans les logs
+            else:  # Si le compte n'existe pas encore
+                hashed_password = bcrypt.generate_password_hash(mdp).decode('utf-8')  # Hasher le mot de passe
+                cur.execute('INSERT INTO user (mail, pseudo, password, date) VALUES (%s, %s, %s, %s)', (mail, pseudo, hashed_password, date))  # Insérer les informations de l'utilisateur dans la base de données
+                cnx.commit()  # Valider les modifications dans la base de données
+                msg = 'Vous êtes inscrit avec succès !'
+                logging.info('Utilisateur enregistré avec succès : %s', pseudo)  # Enregistrer l'information dans les logs
+        except Exception as e:
+            logging.error('Erreur lors de l\'enregistrement de l\'utilisateur : %s', str(e))  # Enregistrer l'erreur dans les logs
+            msg = 'Une erreur est survenue lors de votre inscription.'
+        finally:
+            cur.close()  # Fermer le curseur pour libérer les ressources
+    else:  # Si la méthode est GET
+        if 'pseudo' in session:  # Si l'utilisateur est déjà connecté
+            return redirect(url_for('index'))  # Rediriger vers la page d'accueil
+        msg = ''  # Sinon, ne rien afficher
+    logging.debug('Rendu du template index.html avec le message : %s', msg)  # Afficher le message de retour dans les logs
+    return render_template('index.html', msg=msg)  # Renvoyer le template HTML avec le message de retour en paramètre
 
 @app.route('/delete')
 def delete():

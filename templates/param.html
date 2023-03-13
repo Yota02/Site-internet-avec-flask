@@ -12,18 +12,6 @@
         </h2>
     </div>
     <div class="block">
-        
-        {% if image_name %}
-        <a href="{{ url_for('upload_avatar') }}" >
-        <img class = "pp" src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar" height="13%" width="13%">
-        </a>
-        {% else %}
-        <a href="{{ url_for('upload_avatar') }}">
-            <img class = "pp" src="static/uploads/icone_defaut.png" alt="Avatar" height="13%" width="13%">
-        </a>
-        {%endif%}
-
-        
         <div class="marging"> 
             <br>
             <h1 class="noir-profil">
@@ -36,9 +24,9 @@
                 date d'inscription : {{session.date}}
                 <br>
            </h1>
-           
-           <br>
-           <div class="container">
+        </div>   
+        <br>
+        <div class="container">
             <div class="logout">
                 <p>
                     <a href="{{ url_for('logout') }}">Se déconnecter</a>
@@ -55,8 +43,19 @@
                 </p>
             </div>
         </div>
+
+        {% if image_name %}
+        <a href="{{ url_for('upload_avatar') }}" >
+        <img class = "pp" src="{{ url_for('static', filename='uploads/avatar/' + image_name) }}" alt="Avatar" height="13%" width="13%">
+        </a>
+        {% else %}
+        <a href="{{ url_for('upload_avatar') }}">
+            <img class = "pp" src="static/uploads/icone_defaut.png" alt="Avatar" height="13%" width="13%">
+        </a>
+        {%endif%}
+        
            <br> 
-        </div>
+        
     </div>
 </div>
     

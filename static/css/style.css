@@ -127,14 +127,13 @@
     font-size : 25px ;
     
 }
-
-
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    
+    top: 60%;
+    right: 0%;
 }
 .logout {
     width: 10%;
@@ -166,7 +165,9 @@
     font-weight: bold;
 }
 .pp {
-   margin-left: 70%;
+    top :5% ;
+    right: 5%;
+    position:absolute;
 }
 .param {
     color: black;
